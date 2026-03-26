@@ -4,6 +4,7 @@ Main module to run the password manager application
 from fastapi import FastAPI
 from app.database import get_db_connection
 from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
+from app.auth import create_access_token
 
 app = FastAPI()
 
@@ -50,11 +51,16 @@ def login_user(email: str, password: str):
 
   if user is None:
     return { "error": "User not found" }
-  print(user)
+
   hashed_password = user[0]
 
   if verify_password(password, hashed_password):
-    return { "message": "Login successful" }
+    token = create_access_token({"sub": email})
+
+    return {
+      "message": "Login successful",
+      "access_token": token
+    }
   
   return { "error" : "Incorrect password"}
 
