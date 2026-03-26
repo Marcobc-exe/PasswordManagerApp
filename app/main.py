@@ -3,7 +3,7 @@ Main module to run the password manager application
 """
 from fastapi import FastAPI
 from app.database import get_db_connection
-from app.encryption import hash_password, verify_password, encrypt_website_password
+from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
 
 app = FastAPI()
 
@@ -82,3 +82,42 @@ def save_password(user_email: str, website: str, username: str, password: str):
   conn.close()
 
   return { "message": "Password saved securely" }
+
+@app.get("/get-passwords")
+def get_passwords(user_email: str):
+  conn = get_db_connection()
+  cursor = conn.cursor()
+
+  cursor.execute(
+    "SELECT id FROM users WHERE email =  %s",
+    (user_email,)
+  )
+  
+  user = cursor.fetchone()
+  
+  if user is None:
+    return { "Error": "User not found" }
+
+  user_id = user[0]
+
+  cursor.execute(
+    "SELECT website, username, password FROM passwords WHERE user_id = %s",
+    (user_id,)
+  )
+  
+  results = cursor.fetchall()
+  cursor.close()
+  conn.close()
+  
+  data = []
+
+  for website, username, encrypted_password in results:
+    decrypted = decrypt_website_password(encrypted_password)
+
+    data.append({
+      "website" : website,
+      "username": username,
+      "password": decrypted
+    })
+  
+  return data

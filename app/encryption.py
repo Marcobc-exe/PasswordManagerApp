@@ -1,6 +1,12 @@
 import bcrypt
 from cryptography.fernet import Fernet
 
+# Generate encryption key
+key = Fernet.generate_key()
+cipher = Fernet(key)
+SECRET_KEY = "LrXrVuraYI0sCnvG_tBkke-yZ39VAYbTZg8eglTBqh4="
+cipher = Fernet(SECRET_KEY.encode())
+
 # Hash password
 def hash_password(password: str):
   hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
@@ -9,10 +15,6 @@ def hash_password(password: str):
 # Verify password
 def verify_password(password: str, hashed_password: str):
   return bcrypt.checkpw(password.encode(), hashed_password.encode())
-
-# Generate encryption key
-key = Fernet.generate_key()
-cipher = Fernet(key)
 
 def encrypt_website_password(password: str):
   return cipher.encrypt(password.encode()).decode()
