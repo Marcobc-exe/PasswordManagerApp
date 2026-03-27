@@ -63,11 +63,16 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
     token = create_access_token({"sub": email})
 
     return {
-      "message": "Login successful",
-      "access_token": token
+      "access_token": token,
+      "token_type": "bearer",
     }
   
   return { "error" : "Incorrect password"}
+
+# In the frontend, logout just delete the token from localStorage
+@app.post('logout')
+def logout():
+  return { "message": "User logged out successfully" }
 
 @app.post("/save-password")
 def save_password(website: str, username: str, password: str, user_email: str = Depends(get_current_user)):
@@ -133,3 +138,26 @@ def get_passwords(user_email: str = Depends(get_current_user)):
     })
   
   return data
+
+@app.delete('/delete-password/{password_id}')
+def delete_password(password_id: int, user_email: str = Depends(get_current_user)):
+  conn = get_db_connection()
+  cursor = conn.cursor()
+  cursor.execute("SELECT id FROM users WHERE email = %s", (user_email,))
+  user = cursor.fetchone()
+
+  if user is None:
+    return { "error": "User not found" }
+
+  user_id = user[0]
+
+  cursor.execute(
+    "DELETE FROM passwords WHERE id = %s AND user_id = %s",
+    (password_id, user_id)
+  )
+
+  conn.commit()
+  cursor.close()
+  conn.close()
+
+  return { "message": "Password deleted successfully" }
