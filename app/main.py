@@ -1,12 +1,15 @@
 """
 Main module to run the password manager application
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
+from fastapi_swagger_ui_theme import setup_swagger_ui_theme
+from fastapi.security import OAuth2PasswordRequestForm
 from app.database import get_db_connection
 from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
-from app.auth import create_access_token
+from app.auth import create_access_token, get_current_user
 
-app = FastAPI()
+app = FastAPI(docs_url=None)
+setup_swagger_ui_theme(app, docs_path="/docs", title="My Password Manage API docs")
 
 @app.get("/")
 def home():
@@ -36,7 +39,9 @@ def register_user(email: str, password: str):
   }
 
 @app.post('/login')
-def login_user(email: str, password: str):
+def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
+  email = form_data.username
+  password = form_data.password
   conn = get_db_connection()
   cursor = conn.cursor()
 
@@ -65,7 +70,8 @@ def login_user(email: str, password: str):
   return { "error" : "Incorrect password"}
 
 @app.post("/save-password")
-def save_password(user_email: str, website: str, username: str, password: str):
+def save_password(website: str, username: str, password: str, user_email: str = Depends(get_current_user)):
+  print(user_email)
   conn = get_db_connection()
   cursor = conn.cursor()
   
@@ -90,7 +96,7 @@ def save_password(user_email: str, website: str, username: str, password: str):
   return { "message": "Password saved securely" }
 
 @app.get("/get-passwords")
-def get_passwords(user_email: str):
+def get_passwords(user_email: str = Depends(get_current_user)):
   conn = get_db_connection()
   cursor = conn.cursor()
 
