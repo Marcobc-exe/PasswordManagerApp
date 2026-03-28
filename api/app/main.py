@@ -4,11 +4,19 @@ Main module to run the password manager application
 from fastapi import FastAPI, Depends
 from fastapi_swagger_ui_theme import setup_swagger_ui_theme
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
 from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
 from app.auth import create_access_token, get_current_user
 
 app = FastAPI(docs_url=None)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["http://localhost:3000"],
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
 setup_swagger_ui_theme(app, docs_path="/docs", title="My Password Manage API docs")
 
 @app.get("/")
