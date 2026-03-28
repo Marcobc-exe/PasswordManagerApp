@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Eye, EyeOff, Copy, Trash2 } from "lucide-react";
 
 type PasswordsProps = {
   id: number;
@@ -13,6 +14,7 @@ export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
 
   useEffect(() => {
     const getUserPasswords = async () => {
@@ -49,8 +51,18 @@ export default function Dashboard() {
     getUserPasswords();
   }, []);
 
+  const togglePassword = (id: number) => {
+    setVisiblePasswords((prev) =>
+      prev.includes(id) ? prev.filter((p) => p != id) : [...prev, id],
+    );
+  };
+
+  const copyPasswords = (passwords: string) => {
+    navigator.clipboard.writeText(passwords);
+  };
+
   const deletePassword = async (id: number) => {
-    console.log(id)
+    console.log(id);
     const token = localStorage.getItem("token");
 
     await fetch(`http://127.0.0.1:8000/delete-password/${id}`, {
@@ -60,7 +72,7 @@ export default function Dashboard() {
       },
     });
 
-    setPasswords((pre) => pre.filter(p => p.id != id));
+    setPasswords((pre) => pre.filter((p) => p.id != id));
   };
 
   if (loading) {
@@ -78,31 +90,50 @@ export default function Dashboard() {
       </main>
     );
   }
-  console.log(passwords)
+  console.log(passwords);
   return (
     <main className="min-h-screen bg-black text-white p-10">
       <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-      {passwords.map((p: PasswordsProps) => (
-        <div key={p.website} className="bg-zinc-900 p-4 rounded-xl mb-4">
-          <p>
-            <strong>Website:</strong> {p.website}
-          </p>
-          <p>
-            <strong>Username:</strong> {p.username}
-          </p>
-          <p>
-            <strong>Password:</strong> {p.password}
-          </p>
+      {passwords.map((p: PasswordsProps) => {
+        const isVisible = visiblePasswords.includes(p.id);
 
-          <button
-            onClick={() => deletePassword(p.id)}
-            className="mt-3 bg-red-600 px-4 py-2 rounded-lg hover:bg-red-700 cursor-pointer"
+        return (
+          <div
+            key={p.website}
+            className="bg-zinc-900 p-5 rounded-2xl mb-4 flex justify-between items-center hover:bg-zinc-800 transition"
           >
-            Delete
-          </button>
-        </div>
-      ))}
+            <div className="flex flex-col gap-1">
+              <p className="text-lg font-semibold">{p.website}</p>
+              <p className="text-zinc-400 text-sm">{p.username}</p>
+              <p className="font-mono mt-2 text-lg">
+                {isVisible ? p.password : "*********"}
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => togglePassword(p.id)}
+                className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
+              >
+                {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+              <button
+                onClick={() => copyPasswords(p.password)}
+                className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
+              >
+                <Copy size={18} />
+              </button>
+              <button
+                onClick={() => deletePassword(p.id)}
+                className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </main>
   );
 }
