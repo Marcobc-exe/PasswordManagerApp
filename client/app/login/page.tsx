@@ -18,7 +18,14 @@ export default function LoginPage() {
     });
 
     const data = await response.json();
-    console.log(data);
+    
+    if (data.access_token) {
+      localStorage.setItem("token", data.access_token);
+      window.location.href = "/dashboard";
+    } else {
+      // change this later, use toast notification system
+      alert("Login failed");
+    }
   };
 
   return (
