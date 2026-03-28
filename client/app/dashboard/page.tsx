@@ -3,6 +3,13 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Copy, Trash2, Lock, Plus, X } from "lucide-react";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+import { useMediaQuery } from "@mui/material";
 
 type PasswordsProps = {
   id: number;
@@ -20,6 +27,7 @@ export default function Dashboard() {
   const [website, setWebsite] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   useEffect(() => {
     const getUserPasswords = async () => {
@@ -56,6 +64,7 @@ export default function Dashboard() {
     getUserPasswords();
   }, []);
 
+  // console.log(isMobileResolution())
   const togglePassword = (id: number) => {
     setVisiblePasswords((prev) =>
       prev.includes(id) ? prev.filter((p) => p != id) : [...prev, id],
@@ -142,11 +151,11 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold">Dashboard</h1>
 
         <button
-          className="flex items-center gap-2 bg-blue-600 px-5 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer"
+          className={`flex items-center gap-2 bg-blue-600 ${isMobile ? "p-3 rounded-3xl" : "px-5 py-3 rounded-xl"}  hover:bg-blue-700 transition cursor-pointer`}
           onClick={() => setOpenModal(true)}
         >
-          <Plus size={18} />
-          Add password
+          <Plus size={isMobile ? 24 : 18} />
+          {!isMobile ? "Add password" : ""}
         </button>
       </div>
 
@@ -178,26 +187,51 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => togglePassword(p.id)}
-                  className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
-                >
-                  {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-                <button
-                  onClick={() => copyPasswords(p.password)}
-                  className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
-                >
-                  <Copy size={18} />
-                </button>
-                <button
-                  onClick={() => deletePassword(p.id)}
-                  className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition"
-                >
-                  <Trash2 size={18} />
-                </button>
-              </div>
+              <TooltipProvider>
+                <div className="flex gap-2">
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <button
+                        onClick={() => togglePassword(p.id)}
+                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition cursor-pointer"
+                      >
+                        {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{isVisible ? "Hide" : "Show"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <button
+                        onClick={() => copyPasswords(p.password)}
+                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700  cursor-pointer"
+                      >
+                        <Copy size={18} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Copy</p>
+                    </TooltipContent>
+                  </Tooltip>
+
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <button
+                        onClick={() => deletePassword(p.id)}
+                        className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Delete</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
             </div>
           );
         })}
