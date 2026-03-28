@@ -150,45 +150,47 @@ export default function Dashboard() {
         </button>
       </div>
 
-      {passwords.map((p: PasswordsProps) => {
-        const isVisible = visiblePasswords.includes(p.id);
+      <div className="flex flex-col items-center w-full gap-4">
+        {passwords.map((p: PasswordsProps) => {
+          const isVisible = visiblePasswords.includes(p.id);
 
-        return (
-          <div
-            key={p.website}
-            className="bg-zinc-900 p-5 rounded-2xl mb-4 flex justify-between items-center hover:bg-zinc-800 transition"
-          >
-            <div className="flex flex-col gap-1">
-              <p className="text-lg font-semibold">{p.website}</p>
-              <p className="text-zinc-400 text-sm">{p.username}</p>
-              <p className="font-mono mt-2 text-lg">
-                {isVisible ? p.password : "*********"}
-              </p>
-            </div>
+          return (
+            <div
+              key={p.website}
+              className="w-full max-w-md bg-zinc-900 p-5 rounded-2xl mb-4 flex justify-between items-center hover:bg-zinc-800 transition"
+            >
+              <div className="flex flex-col gap-1">
+                <p className="text-lg font-semibold">{p.website}</p>
+                <p className="text-zinc-400 text-sm">{p.username}</p>
+                <p className="font-mono mt-2 text-lg">
+                  {isVisible ? p.password : "*********"}
+                </p>
+              </div>
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => togglePassword(p.id)}
-                className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
-              >
-                {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-              <button
-                onClick={() => copyPasswords(p.password)}
-                className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
-              >
-                <Copy size={18} />
-              </button>
-              <button
-                onClick={() => deletePassword(p.id)}
-                className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition"
-              >
-                <Trash2 size={18} />
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => togglePassword(p.id)}
+                  className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
+                >
+                  {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+                <button
+                  onClick={() => copyPasswords(p.password)}
+                  className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition"
+                >
+                  <Copy size={18} />
+                </button>
+                <button
+                  onClick={() => deletePassword(p.id)}
+                  className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition"
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
       <AnimatePresence>
         {openModal && (
           <motion.div
