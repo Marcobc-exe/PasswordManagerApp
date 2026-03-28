@@ -1,7 +1,7 @@
 """
 Main module to run the password manager application
 """
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Form
 from fastapi_swagger_ui_theme import setup_swagger_ui_theme
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
@@ -83,8 +83,12 @@ def logout():
   return { "message": "User logged out successfully" }
 
 @app.post("/save-password")
-def save_password(website: str, username: str, password: str, user_email: str = Depends(get_current_user)):
-  print(user_email)
+def save_password(
+  website: str = Form(...),
+  username: str = Form(...),
+  password: str = Form(...),
+  user_email: str = Depends(get_current_user),
+):
   conn = get_db_connection()
   cursor = conn.cursor()
   
