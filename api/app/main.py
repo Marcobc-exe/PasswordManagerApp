@@ -126,20 +126,20 @@ def get_passwords(user_email: str = Depends(get_current_user)):
   user_id = user[0]
 
   cursor.execute(
-    "SELECT website, username, password FROM passwords WHERE user_id = %s",
+    "SELECT id, website, username, password FROM passwords WHERE user_id = %s",
     (user_id,)
   )
   
   results = cursor.fetchall()
   cursor.close()
   conn.close()
-  
   data = []
 
-  for website, username, encrypted_password in results:
+  for id, website, username, encrypted_password in results:
     decrypted = decrypt_website_password(encrypted_password)
 
     data.append({
+      "id": id,
       "website" : website,
       "username": username,
       "password": decrypted
