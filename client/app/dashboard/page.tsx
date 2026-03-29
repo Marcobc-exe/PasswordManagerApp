@@ -40,6 +40,12 @@ export default function Dashboard() {
           },
         });
 
+        if (res.status === 401) {
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          return;
+        }
+
         if (!res.ok) {
           setError("Something went wrong fetching passwords");
           setLoading(false);
