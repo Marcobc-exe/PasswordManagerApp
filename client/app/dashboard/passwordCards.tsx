@@ -9,6 +9,7 @@ import { Eye, EyeOff, Copy, Trash2 } from "lucide-react";
 import { FC } from "react";
 
 type Props = {
+  darkMode: boolean;
   search: string;
   passwords: PasswordsProps[];
   visiblePasswords: number[];
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export const PasswordCards: FC<Props> = ({
+  darkMode,
   search,
   passwords,
   visiblePasswords,
@@ -48,7 +50,14 @@ export const PasswordCards: FC<Props> = ({
           return (
             <div
               key={p.website}
-              className="text-white w-full max-w-md bg-[#0f2027] p-5 rounded-2xl flex justify-between items-center hover:bg-[#0d1b21] transition"
+              className={`
+                w-full max-w-md  p-5 rounded-2xl flex justify-between items-center transition
+                ${
+                  darkMode
+                    ? "bg-[#0f2027] hover:bg-[#0d1b21] text-white"
+                    : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
+                }
+              `}
             >
               <div className="flex flex-col gap-1 w-2/3">
                 <p className="text-lg font-semibold">{p.website}</p>
@@ -64,7 +73,14 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleTogglePassword(p.id)}
-                        className="bg-[#21414f] p-2 rounded-lg hover:bg-[#0d1b21] transition cursor-pointer"
+                        className={`
+                          p-2 rounded-lg transition cursor-pointer
+                          ${
+                            darkMode
+                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                              : "bg-[#ffd391] hover:bg-[#f9c16c]"
+                          }
+                        `}
                       >
                         {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -78,7 +94,14 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleCopyPasswords(p.password)}
-                        className="bg-[#21414f] p-2 rounded-lg hover:bg-[#0d1b21]  cursor-pointer"
+                        className={`
+                          p-2 rounded-lg transition cursor-pointer
+                          ${
+                            darkMode
+                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                              : "bg-[#ffd391] hover:bg-[#f9c16c]"
+                          }
+                        `}
                       >
                         <Copy size={18} />
                       </button>
@@ -92,7 +115,15 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleDeletePassword(p.id)}
-                        className="bg-[#0d1b21] p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
+                        // className="bg-[#0d1b21] p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
+                        className={`
+                          p-2 rounded-lg transition cursor-pointer
+                          ${
+                            darkMode
+                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                              : "bg-[#e49d33] hover:bg-red-700"
+                          }
+                        `}
                       >
                         <Trash2 size={18} />
                       </button>
