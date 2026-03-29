@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Sun, Moon } from "lucide-react";
 import { useMediaQuery } from "@mui/material";
 import { AddPassModal } from "./addPassModal";
 import { PasswordsProps } from "../type";
@@ -124,10 +124,10 @@ export default function Dashboard() {
 
   return (
     <main
-      className={`min-h-screen p-10 transition-all duration-700 ${
+      className={`min-h-screen p-10 transition-all duration-500 ${
         darkMode
-          ? "bg-linear-to-br from-indigo-950 via-zinc-900 to-black text-white"
-          : "bg-linear-to-br from-[tan] from-1% via-white via-90% to-[#f3d5ae]"
+          ? "bg-linear-to-br from-[#0d1b21] via-[#0a1215] to-[#08151a]"
+          : "bg-linear-to-br from-pink-200 from-5% via-white via-90% to-[tan] text-black"
       }`}
     >
       <div className="flex justify-between items-center mb-8">
@@ -135,21 +135,23 @@ export default function Dashboard() {
 
         <div className="flex justify-between items-end gap-3">
           <button
-            className={`flex items-center gap-2 bg-blue-600 ${isMobile ? "p-3 rounded-3xl" : "px-5 py-3 rounded-xl"}  hover:bg-blue-700 transition cursor-pointer`}
+            onClick={() => setDarkMode(!darkMode)}
+            className="bg-[#0f2027] cursor-pointer px-5 py-3 rounded-lg hover:bg-[#0d1b21] transition text-white"
+          >
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+
+          <button
+            className={`flex items-center gap-2 bg-blue-600 text-white ${isMobile ? "p-3 rounded-3xl" : "px-5 py-3 rounded-xl"}  hover:bg-blue-700 transition cursor-pointer`}
             onClick={() => setOpenModal(true)}
           >
             <Plus size={isMobile ? 24 : 18} />
             {!isMobile ? "Add password" : ""}
           </button>
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="bg-zinc-700 cursor-pointer px-5 py-3 rounded-lg hover:bg-zinc-800 transition"
-          >
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </button>
+
           <button
             onClick={handleLogout}
-            className="bg-red-600 cursor-pointer px-5 py-3 rounded-xl hover:bg-red-700 transition"
+            className="bg-red-600 text-white cursor-pointer px-5 py-3 rounded-xl hover:bg-red-700 transition"
           >
             Logout
           </button>
@@ -162,7 +164,7 @@ export default function Dashboard() {
           placeholder="Search passwords..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full mb-8 bg-zinc-900/70 backdrop-blur px-5 py-3 rounded-2xl outline-none border border-zinc-800 focus:border-zinc-500 transition"
+          className="w-full text-white mb-8 bg-[#0f2027] backdrop-blur px-5 py-3 rounded-2xl outline-none border border-zinc-800 focus:border-zinc-500 transition"
         />
         <PasswordCards
           search={search}

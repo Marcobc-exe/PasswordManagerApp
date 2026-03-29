@@ -48,7 +48,7 @@ export const PasswordCards: FC<Props> = ({
           return (
             <div
               key={p.website}
-              className="w-full max-w-md bg-zinc-900 p-5 rounded-2xl flex justify-between items-center hover:bg-zinc-800 transition"
+              className="text-white w-full max-w-md bg-[#0f2027] p-5 rounded-2xl flex justify-between items-center hover:bg-[#0d1b21] transition"
             >
               <div className="flex flex-col gap-1 w-2/3">
                 <p className="text-lg font-semibold">{p.website}</p>
@@ -64,7 +64,7 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleTogglePassword(p.id)}
-                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition cursor-pointer"
+                        className="bg-[#21414f] p-2 rounded-lg hover:bg-[#0d1b21] transition cursor-pointer"
                       >
                         {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
@@ -78,7 +78,7 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleCopyPasswords(p.password)}
-                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700  cursor-pointer"
+                        className="bg-[#21414f] p-2 rounded-lg hover:bg-[#0d1b21]  cursor-pointer"
                       >
                         <Copy size={18} />
                       </button>
@@ -92,7 +92,7 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleDeletePassword(p.id)}
-                        className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
+                        className="bg-[#0d1b21] p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
                       >
                         <Trash2 size={18} />
                       </button>
