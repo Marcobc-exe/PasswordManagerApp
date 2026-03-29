@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Sun, Moon } from "lucide-react";
 import { useMediaQuery } from "@mui/material";
 import { AddPassModal } from "./addPassModal";
 import { PasswordsProps } from "../type";
@@ -9,6 +8,11 @@ import { PasswordCards } from "./passwordCards";
 import { NoPasswordsYet } from "./noPasswords";
 import { Loading } from "./Loading";
 import { ErrorMsg } from "./ErrorMessage";
+import { SearchBar } from "./SearchBar";
+import { ThemeBtn } from "./ThemeBtn";
+import { AddPasswordBtn } from "./AddPasswordBtn";
+import { LogoutBtn } from "./LogoutBtn";
+import { TitleDashboard } from "./TitleDashboard";
 
 export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
@@ -68,6 +72,8 @@ export default function Dashboard() {
   const handleSetUsername = (value: string) => setUsername(value);
   const handleSetPassword = (value: string) => setPassword(value);
   const handleOpenModal = (value: boolean) => setOpenModal(value);
+  const handleSearch = (value: string) => setSearch(value);
+  const handleDarkMode = (value: boolean) => setDarkMode(value);
 
   const togglePassword = (id: number) => {
     setVisiblePasswords((prev) =>
@@ -127,46 +133,29 @@ export default function Dashboard() {
       className={`min-h-screen p-10 transition-all duration-500 ${
         darkMode
           ? "bg-linear-to-br from-[#0d1b21] via-[#0a1215] to-[#08151a]"
-          : "bg-linear-to-br from-pink-200 from-5% via-white via-90% to-[tan] text-black"
+          : "bg-linear-to-br from-[#fafbff] from-5% via-[#eef0f7] via-90% to-[#e4e7f0] text-black"
       }`}
     >
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-
+        <TitleDashboard darkMode={darkMode} />
         <div className="flex justify-between items-end gap-3">
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className="bg-[#0f2027] cursor-pointer px-5 py-3 rounded-lg hover:bg-[#0d1b21] transition text-white"
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-
-          <button
-            className={`flex items-center gap-2 bg-blue-600 text-white ${isMobile ? "p-3 rounded-3xl" : "px-5 py-3 rounded-xl"}  hover:bg-blue-700 transition cursor-pointer`}
-            onClick={() => setOpenModal(true)}
-          >
-            <Plus size={isMobile ? 24 : 18} />
-            {!isMobile ? "Add password" : ""}
-          </button>
-
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 text-white cursor-pointer px-5 py-3 rounded-xl hover:bg-red-700 transition"
-          >
-            Logout
-          </button>
+          <ThemeBtn darkMode={darkMode} handleDarkMode={handleDarkMode} />
+          <AddPasswordBtn
+            isMobile={isMobile}
+            handleOpenModal={handleOpenModal}
+          />
+          <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto">
-        <input
-          type="text"
-          placeholder="Search passwords..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full text-white mb-8 bg-[#0f2027] backdrop-blur px-5 py-3 rounded-2xl outline-none border border-zinc-800 focus:border-zinc-500 transition"
+        <SearchBar
+          search={search}
+          darkMode={darkMode}
+          handleSearch={handleSearch}
         />
         <PasswordCards
+          darkMode={darkMode}
           search={search}
           passwords={passwords}
           visiblePasswords={visiblePasswords}
