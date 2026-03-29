@@ -1,22 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, Copy, Trash2, Lock, Plus, X } from "lucide-react";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
+import { Plus } from "lucide-react";
 import { useMediaQuery } from "@mui/material";
-
-type PasswordsProps = {
-  id: number;
-  website: string;
-  username: string;
-  password: string;
-};
+import { AddPassModal } from "./addPassModal";
+import { PasswordsProps } from "../type";
+import { PasswordCards } from "./passwordCards";
+import { NoPasswordsYet } from "./noPasswords";
+import { Error } from "./error";
+import { Loading } from "./Loading";
 
 export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
@@ -64,7 +56,11 @@ export default function Dashboard() {
     getUserPasswords();
   }, []);
 
-  // console.log(isMobileResolution())
+  const handleSetWebsite = (value: string) => setWebsite(value);
+  const handleSetUsername = (value: string) => setUsername(value);
+  const handleSetPassword = (value: string) => setPassword(value);
+  const handleOpenModal = (value: boolean) => setOpenModal(value);
+
   const togglePassword = (id: number) => {
     setVisiblePasswords((prev) =>
       prev.includes(id) ? prev.filter((p) => p != id) : [...prev, id],
@@ -89,7 +85,7 @@ export default function Dashboard() {
     setPasswords((pre) => pre.filter((p) => p.id != id));
   };
 
-  const savePassword = async () => {
+  const handleSavePassword = async () => {
     const token = localStorage.getItem("token");
 
     const formData = new FormData();
@@ -109,41 +105,9 @@ export default function Dashboard() {
     window.location.reload();
   };
 
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-xl">Loading passwords...</p>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p className="text-red-500 text-xl">{error}</p>
-      </main>
-    );
-  }
-
-  if (passwords.length === 0) {
-    return (
-      <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6">
-        <div className="bg-zinc-900 p-6 rounded-2xl">
-          <Lock size={40} />
-        </div>
-
-        <h1 className="text-2xl font-bold">No passwords yet</h1>
-
-        <p className="text-zinc-400 text-center max-w-sm">
-          Start by adding your first password. It will appear here once saved.
-        </p>
-
-        <button className="bg-blue-600 px-6 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer">
-          Add your first password
-        </button>
-      </main>
-    );
-  }
+  if (loading) return <Loading />
+  if (error) return <Error error={error}  />
+  if (passwords.length == 0) return <NoPasswordsYet />
 
   return (
     <main className="min-h-screen bg-black text-white p-10">
@@ -159,142 +123,24 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <div
-        className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          gap-4
-          w-full
-          max-w-4xl
-          mx-auto
-          place-items-center
-        "
-      >
-        {passwords.map((p: PasswordsProps) => {
-          const isVisible = visiblePasswords.includes(p.id);
-
-          return (
-            <div
-              key={p.website}
-              className="w-full max-w-md bg-zinc-900 p-5 rounded-2xl flex justify-between items-center hover:bg-zinc-800 transition"
-            >
-              <div className="flex flex-col gap-1 w-2/3">
-                <p className="text-lg font-semibold">{p.website}</p>
-                <p className="text-zinc-400 text-sm">{p.username}</p>
-                <p className="font-mono mt-2 text-lg truncate">
-                  {isVisible ? p.password : "*********"}
-                </p>
-              </div>
-
-              <TooltipProvider>
-                <div className="flex gap-2">
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => togglePassword(p.id)}
-                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700 transition cursor-pointer"
-                      >
-                        {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{isVisible ? "Hide" : "Show"}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => copyPasswords(p.password)}
-                        className="bg-zinc-800 p-2 rounded-lg hover:bg-zinc-700  cursor-pointer"
-                      >
-                        <Copy size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Copy</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => deletePassword(p.id)}
-                        className="bg-red-600 p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Delete</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-              </TooltipProvider>
-            </div>
-          );
-        })}
-      </div>
-      <AnimatePresence>
-        {openModal && (
-          <motion.div
-            className="fixed inset-0 bg-black/60 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-zinc-900 p-8 rounded-2xl w-100 shadow-xl"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-            >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">Add new password</h2>
-
-                <button onClick={() => setOpenModal(false)}>
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  placeholder="Website"
-                  className="bg-zinc-800 p-3 rounded-lg outline-none"
-                  value={website}
-                  onChange={(e) => setWebsite(e.target.value)}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Username"
-                  className="bg-zinc-800 p-3 rounded-lg outline-none"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Password"
-                  className="bg-zinc-800 p-3 rounded-lg outline-none"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-
-                <button
-                  type="submit"
-                  className="bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition"
-                  onClick={() => savePassword()}
-                >
-                  Save password
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PasswordCards
+        passwords={passwords}
+        visiblePasswords={visiblePasswords}
+        handleTogglePassword={togglePassword}
+        handleCopyPasswords={copyPasswords}
+        handleDeletePassword={deletePassword}
+      />
+      <AddPassModal
+        openModal={openModal}
+        website={website}
+        username={username}
+        password={password}
+        handleSetWebsite={handleSetWebsite}
+        handleSetUsername={handleSetUsername}
+        handleSetPassword={handleSetPassword}
+        handleSavePassword={handleSavePassword}
+        handleOpenModal={handleOpenModal}
+      />
     </main>
   );
 }
