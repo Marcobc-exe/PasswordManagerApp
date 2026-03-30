@@ -130,10 +130,10 @@ export default function Dashboard() {
 
   return (
     <main
-      className={`min-h-screen p-10 transition-all duration-500 ${
+      className={`relative min-h-screen p-10 transition-all duration-500 ${
         darkMode
-          ? "bg-linear-to-br from-[#0d1b21] via-[#0a1215] to-[#08151a]"
-          : "bg-linear-to-br from-[#fafbff] from-5% via-[#eef0f7] via-90% to-[#e4e7f0] text-black"
+          ? "bg-linear-to-br from-[#153746] via-[#0b1316] to-[#0a1f29] animate-gradient"
+          : "bg-linear-to-br from-[#ffffff] from-5% via-[#eef1f9] via-90% to-[#f3dfee] text-black animate-gradient"
       }`}
     >
       <div className="flex justify-between items-center mb-8">
@@ -147,7 +147,6 @@ export default function Dashboard() {
           <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
         </div>
       </div>
-
       <div className="max-w-4xl mx-auto">
         <SearchBar
           search={search}
