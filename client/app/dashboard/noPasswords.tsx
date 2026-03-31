@@ -2,7 +2,7 @@ import { Lock } from "lucide-react";
 
 export const NoPasswordsYet = () => {
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6">
+    <main className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center gap-6">
       <div className="bg-zinc-900 p-6 rounded-2xl">
         <Lock size={40} />
       </div>
