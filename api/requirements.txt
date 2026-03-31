@@ -25,6 +25,7 @@ pycparser==3.0
 pydantic==2.12.5
 pydantic_core==2.41.5
 python-discovery==1.2.0
+python-dotenv==1.2.2
 python-jose==3.5.0
 python-multipart==0.0.22
 rsa==4.9.1
