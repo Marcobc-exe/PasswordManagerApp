@@ -38,6 +38,10 @@ export default function Dashboard() {
           return;
         }
 
+        /* 
+          http://localhost:8000
+          http://127.0.0.1:8000
+        */
         const res = await fetch("http://127.0.0.1:8000/get-passwords", {
           headers: {
             Authorization: `Bearer ${token}`,
