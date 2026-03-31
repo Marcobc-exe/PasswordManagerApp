@@ -41,7 +41,10 @@ export const MobileMenu: FC<Props> = ({ handleLogout, handleOpenModal }) => {
               </button>
 
               <button
-                onClick={() => handleOpenModal(true)}
+                onClick={() => {
+                  handleOpenModal(true);
+                  setOpen(false);
+                }}
                 className="flex items-center gap-3 cursor-pointer"
               >
                 <Plus size={20} />
