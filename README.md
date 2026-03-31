@@ -1,4 +1,4 @@
-# Password Manager App
+# Lockerpass - Password Manager App
 A full-stack password manager web application built with modern technologies.
 Users can securely store, view, and manage their credentials through an intuitive and responsive interface.
 
@@ -10,7 +10,7 @@ Password: guest123
 ```
 
 ## 🚀 Live Demo
-- 🌐 Frontend: https://password-manager-client-nine.vercel.app/login
+- 🌐 Frontend: https://www.lockerpass.site/login
 - 📚 API Docs (Swagger): https://passwords-manager-api.onrender.com/docs#/default
 
 ## 🛠️ Tech Stack
