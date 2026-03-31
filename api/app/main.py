@@ -8,10 +8,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
 from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
 from app.auth import create_access_token, get_current_user
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 origins = [
-  "http://localhost:3000",
-  "https://your-frontend-domain.vercel.app"
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 app = FastAPI(docs_url=None)
@@ -83,7 +87,7 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
   return { "error" : "Incorrect password"}
 
 # In the frontend, logout just delete the token from localStorage
-@app.post('logout')
+@app.post('/logout')
 def logout():
   return { "message": "User logged out successfully" }
 
