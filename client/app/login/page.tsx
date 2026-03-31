@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { FormEvent, SyntheticEvent, useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 
 export default function LoginPage() {
@@ -10,7 +10,9 @@ export default function LoginPage() {
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const response = await fetch("http://127.0.0.1:8000/login", {
       method: "POST",
       headers: {
@@ -35,7 +37,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex h-screen items-center justify-center text-white">
-      <div className={`bg-zinc-900 p-8 rounded-2xl space-y-6`}>
+      <form onSubmit={handleLogin} className={`bg-zinc-900 p-8 rounded-2xl space-y-6`}>
         <h1 className="text-2xl font-bold text-center">Login</h1>
 
         <input
@@ -53,12 +55,12 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          onClick={handleLogin}
+          type="submit"
           className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer"
         >
           Login
         </button>
-      </div>
+      </form>
     </main>
   );
 }
