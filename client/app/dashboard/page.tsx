@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { useMediaQuery } from "@mui/material";
 import { AddPassModal } from "./addPassModal";
 import { PasswordsProps } from "../type";
@@ -102,8 +102,9 @@ export default function Dashboard() {
 
     setPasswords((pre) => pre.filter((p) => p.id != id));
   };
-  console.log(process.env.NEXT_PUBLIC_API_URL);
-  const handleSavePassword = async () => {
+
+  const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const token = localStorage.getItem("token");
 
     const formData = new FormData();

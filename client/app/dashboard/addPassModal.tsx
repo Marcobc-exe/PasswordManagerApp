@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
-import { FC } from "react";
+import { FC, SyntheticEvent } from "react";
 import { useThemeStore } from "../store/themeStore";
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   handleSetWebsite: (value: string) => void;
   handleSetUsername: (value: string) => void;
   handleSetPassword: (value: string) => void;
-  handleSavePassword: () => void;
+  handleSavePassword: (e: SyntheticEvent<HTMLFormElement>) => void;
   handleOpenModal: (value: boolean) => void;
 };
 
@@ -56,7 +56,7 @@ export const AddPassModal: FC<Props> = ({
               </button>
             </div>
 
-            <div className="flex flex-col gap-4">
+            <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
               <input
                 type="text"
                 placeholder="Website"
@@ -84,11 +84,10 @@ export const AddPassModal: FC<Props> = ({
               <button
                 type="submit"
                 className="bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-                onClick={() => handleSavePassword()}
               >
                 Save password
               </button>
-            </div>
+            </form>
           </motion.div>
         </motion.div>
       )}
