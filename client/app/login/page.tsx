@@ -1,10 +1,12 @@
 "use client";
-import { FormEvent, SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const darkMode = useThemeStore((state) => state.darkMode);
   const inputTheme = darkMode
     ? "bg-[#153746] hover:bg-[#15495f]"
@@ -37,7 +39,10 @@ export default function LoginPage() {
 
   return (
     <main className="flex h-screen items-center justify-center text-white">
-      <form onSubmit={handleLogin} className={`bg-zinc-900 p-8 rounded-2xl space-y-6`}>
+      <form
+        onSubmit={handleLogin}
+        className={`bg-zinc-900 p-12 rounded-2xl space-y-6`}
+      >
         <h1 className="text-2xl font-bold text-center">Login</h1>
 
         <input
@@ -47,13 +52,22 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          placeholder="Password"
-          className={`w-full p-3 rounded-lg ${inputTheme}`}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className={`w-full p-3 rounded-lg pr-12 ${inputTheme}`}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 hover:backdrop-opacity-100 transition cursor-pointer"
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <button
           type="submit"
           className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer"
