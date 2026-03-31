@@ -24,7 +24,6 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [search, setSearch] = useState("");
-  const [darkMode, setDarkMode] = useState(true);
   const isMobile = useMediaQuery("(max-width: 640px)");
 
   useEffect(() => {
@@ -73,7 +72,6 @@ export default function Dashboard() {
   const handleSetPassword = (value: string) => setPassword(value);
   const handleOpenModal = (value: boolean) => setOpenModal(value);
   const handleSearch = (value: string) => setSearch(value);
-  const handleDarkMode = (value: boolean) => setDarkMode(value);
 
   const togglePassword = (id: number) => {
     setVisiblePasswords((prev) =>
@@ -129,17 +127,11 @@ export default function Dashboard() {
   if (passwords.length == 0) return <NoPasswordsYet />;
 
   return (
-    <main
-      className={`relative min-h-screen p-10 transition-all duration-500 ${
-        darkMode
-          ? "bg-linear-to-br from-[#153746] via-[#0b1316] to-[#0a1f29] animate-gradient"
-          : "bg-linear-to-br from-[#ffffff] from-5% via-[#eef1f9] via-90% to-[#f3dfee] text-black animate-gradient"
-      }`}
-    >
+    <main className={`relative min-h-screen p-10`}>
       <div className="flex justify-between items-center mb-8">
-        <TitleDashboard darkMode={darkMode} />
+        <TitleDashboard />
         <div className="flex justify-between items-end gap-3">
-          <ThemeBtn darkMode={darkMode} handleDarkMode={handleDarkMode} />
+          <ThemeBtn />
           <AddPasswordBtn
             isMobile={isMobile}
             handleOpenModal={handleOpenModal}
@@ -150,11 +142,9 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto">
         <SearchBar
           search={search}
-          darkMode={darkMode}
           handleSearch={handleSearch}
         />
         <PasswordCards
-          darkMode={darkMode}
           search={search}
           passwords={passwords}
           visiblePasswords={visiblePasswords}

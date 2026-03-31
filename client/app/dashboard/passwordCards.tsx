@@ -7,9 +7,9 @@ import {
 } from "@/components/ui/tooltip";
 import { Eye, EyeOff, Copy, Trash2 } from "lucide-react";
 import { FC } from "react";
+import { useThemeStore } from "@/app/store/themeStore";
 
 type Props = {
-  darkMode: boolean;
   search: string;
   passwords: PasswordsProps[];
   visiblePasswords: number[];
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export const PasswordCards: FC<Props> = ({
-  darkMode,
   search,
   passwords,
   visiblePasswords,
@@ -27,6 +26,8 @@ export const PasswordCards: FC<Props> = ({
   handleCopyPasswords,
   handleDeletePassword,
 }) => {
+  const darkMode = useThemeStore((state) => state.darkMode);
+  
   return (
     <div
       className="
@@ -115,13 +116,12 @@ export const PasswordCards: FC<Props> = ({
                     <TooltipTrigger>
                       <button
                         onClick={() => handleDeletePassword(p.id)}
-                        // className="bg-[#0d1b21] p-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
                         className={`
                           p-2 rounded-lg transition cursor-pointer
                           ${
                             darkMode
-                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                              : "bg-[#e49d33] hover:bg-red-700"
+                              ? "bg-[#21414f] hover:bg-red-400"
+                              : "bg-[#e49d33] hover:bg-red-400"
                           }
                         `}
                       >

@@ -1,10 +1,8 @@
-import { FC } from "react";
+import { useThemeStore } from "@/app/store/themeStore";
 
-type Props = {
-  darkMode: boolean;
-};
-
-export const TitleDashboard: FC<Props> = ({ darkMode }) => {
+export const TitleDashboard = () => {
+  const darkMode = useThemeStore((state) => state.darkMode);
+  
   return (
     <h1
       className={`text-3xl font-bold ${darkMode ? "text-white" : "text-black"}`}
