@@ -19,38 +19,43 @@ export const MobileMenu: FC<Props> = ({ handleLogout, handleOpenModal }) => {
       </button>
 
       {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 cursor-pointer"
-        >
-          <div className={`absolute right-0 top-0 h-full w-64 p-6 flex flex-col gap-6 ${darkMode ? "bg-[#153746b4]" : "bg-[#dbb985]"}`}>
-            <button className="cursor-pointer" onClick={() => setOpen(false)}>
-              <X />
-            </button>
-
-            <button
-              onClick={toggleDarkMode}
-              className="flex items-center gap-3 cursor-pointer"
+        <div className="fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          >
+            <div
+              className={`absolute right-0 top-0 h-full w-64 p-6 flex flex-col gap-6 ${darkMode ? "bg-[#153746b4]" : "bg-[#dbb985]"}`}
+              onClick={(e) => e.stopPropagation()}
             >
-              {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-              Toggle theme
-            </button>
+              <button className="cursor-pointer" onClick={() => setOpen(false)}>
+                <X />
+              </button>
 
-            <button
-              onClick={() => handleOpenModal(true)}
-              className="flex items-center gap-3 cursor-pointer"
-            >
-              <Plus size={20} />
-              Add password
-            </button>
+              <button
+                onClick={toggleDarkMode}
+                className="flex items-center gap-3 cursor-pointer"
+              >
+                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                Toggle theme
+              </button>
 
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-3 text-red-400 cursor-pointer"
-            >
-              <LogOut size={20} />
-              Logout
-            </button>
+              <button
+                onClick={() => handleOpenModal(true)}
+                className="flex items-center gap-3 cursor-pointer"
+              >
+                <Plus size={20} />
+                Add password
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 text-red-400 cursor-pointer"
+              >
+                <LogOut size={20} />
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       )}
