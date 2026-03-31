@@ -2,6 +2,7 @@
 import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ export default function LoginPage() {
       http://localhost:8000
       http://127.0.0.1:8000/login
     */
-    const response = await fetch("http://127.0.0.1:8000/login", {
+    const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

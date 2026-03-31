@@ -14,6 +14,7 @@ import { AddPasswordBtn } from "./AddPasswordBtn";
 import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
+import { API_URL } from "@/lib/api";
 
 export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
@@ -40,9 +41,9 @@ export default function Dashboard() {
 
         /* 
           http://localhost:8000
-          http://127.0.0.1:8000
+          http://127.0.0.1:8000/get-passwords
         */
-        const res = await fetch("http://127.0.0.1:8000/get-passwords", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-passwords`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -91,8 +92,8 @@ export default function Dashboard() {
   const deletePassword = async (id: number) => {
     console.log(id);
     const token = localStorage.getItem("token");
-
-    await fetch(`http://127.0.0.1:8000/delete-password/${id}`, {
+    //http://127.0.0.1:8000/delete-password/${id}
+    await fetch(`${API_URL}/delete-password/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -101,7 +102,7 @@ export default function Dashboard() {
 
     setPasswords((pre) => pre.filter((p) => p.id != id));
   };
-
+  console.log(process.env.NEXT_PUBLIC_API_URL);
   const handleSavePassword = async () => {
     const token = localStorage.getItem("token");
 
@@ -109,8 +110,8 @@ export default function Dashboard() {
     formData.append("website", website);
     formData.append("username", username);
     formData.append("password", password);
-
-    await fetch("http://127.0.0.1:8000/save-password", {
+    //http://127.0.0.1:8000/save-password
+    await fetch(`${API_URL}/save-password`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
