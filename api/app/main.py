@@ -13,11 +13,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
 origins = [
   FRONTEND_URL,
   "http://localhost:3000",
   "http://127.0.0.1:3000",
+  "https://password-manager-client-nine.vercel.app/"
 ]
 
 app = FastAPI(docs_url=None)
