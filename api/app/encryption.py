@@ -14,7 +14,10 @@ def hash_password(password: str):
 
 # Verify password
 def verify_password(password: str, hashed_password: str):
-  return bcrypt.checkpw(password.encode(), hashed_password.encode())
+  try:
+    return bcrypt.checkpw(password.encode(), hashed_password.encode())
+  except ValueError:
+    return False
 
 def encrypt_website_password(password: str):
   return cipher.encrypt(password.encode()).decode()

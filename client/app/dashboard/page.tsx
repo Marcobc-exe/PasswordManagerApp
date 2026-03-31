@@ -129,7 +129,24 @@ export default function Dashboard() {
 
   if (loading) return <Loading />;
   if (error) return <ErrorMsg error={error} />;
-  if (passwords.length == 0) return <NoPasswordsYet />;
+  if (passwords.length == 0) {
+    return (
+      <>
+        <NoPasswordsYet handleOpenModal={handleOpenModal} />
+        <AddPassModal
+          openModal={openModal}
+          website={website}
+          username={username}
+          password={password}
+          handleSetWebsite={handleSetWebsite}
+          handleSetUsername={handleSetUsername}
+          handleSetPassword={handleSetPassword}
+          handleSavePassword={handleSavePassword}
+          handleOpenModal={handleOpenModal}
+        />
+      </>
+    );
+  }
 
   return (
     <main className={`relative min-h-screen p-10`}>
