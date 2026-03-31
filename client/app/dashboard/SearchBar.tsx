@@ -1,12 +1,14 @@
 import { FC } from "react";
+import { useThemeStore } from "@/app/store/themeStore";
 
 type Props = {
   search: string;
-  darkMode: boolean;
   handleSearch: (value: string) => void;
 };
 
-export const SearchBar: FC<Props> = ({ search, darkMode, handleSearch }) => {
+export const SearchBar: FC<Props> = ({ search, handleSearch }) => {
+  const darkMode = useThemeStore((state) => state.darkMode);
+
   return (
     <input
       type="text"

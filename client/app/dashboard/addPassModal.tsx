@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { FC } from "react";
+import { useThemeStore } from "../store/themeStore";
 
 type Props = {
   openModal: boolean;
@@ -25,6 +26,11 @@ export const AddPassModal: FC<Props> = ({
   handleSavePassword,
   handleOpenModal,
 }) => {
+  const darkMode = useThemeStore((state) => state.darkMode);
+  const inputTheme = darkMode 
+    ? "bg-[#153746] hover:bg-[#15495f]" 
+    : "bg-[#9c7f53] hover:bg-[#b58b4d]"
+  
   return (
     <AnimatePresence>
       {openModal && (
@@ -52,7 +58,7 @@ export const AddPassModal: FC<Props> = ({
               <input
                 type="text"
                 placeholder="Website"
-                className="bg-zinc-800 p-3 rounded-lg outline-none"
+                className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={website}
                 onChange={(e) => handleSetWebsite(e.target.value)}
               />
@@ -60,7 +66,7 @@ export const AddPassModal: FC<Props> = ({
               <input
                 type="text"
                 placeholder="Username"
-                className="bg-zinc-800 p-3 rounded-lg outline-none"
+                className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={username}
                 onChange={(e) => handleSetUsername(e.target.value)}
               />
@@ -68,14 +74,14 @@ export const AddPassModal: FC<Props> = ({
               <input
                 type="text"
                 placeholder="Password"
-                className="bg-zinc-800 p-3 rounded-lg outline-none"
+                className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={password}
                 onChange={(e) => handleSetPassword(e.target.value)}
               />
 
               <button
                 type="submit"
-                className="bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition"
+                className="bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition cursor-pointer"
                 onClick={() => handleSavePassword()}
               >
                 Save password
