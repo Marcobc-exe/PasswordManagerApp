@@ -1,6 +1,11 @@
 import { Lock } from "lucide-react";
+import { FC } from "react";
 
-export const NoPasswordsYet = () => {
+type Props = {
+  handleOpenModal: (value: boolean) => void;
+};
+
+export const NoPasswordsYet: FC<Props> = ({ handleOpenModal }) => {
   return (
     <main className="min-h-screen bg-transparent text-white flex flex-col items-center justify-center gap-6">
       <div className="bg-zinc-900 p-6 rounded-2xl">
@@ -13,7 +18,10 @@ export const NoPasswordsYet = () => {
         Start by adding your first password. It will appear here once saved.
       </p>
 
-      <button className="bg-blue-600 px-6 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer">
+      <button
+        onClick={() => handleOpenModal(true)}
+        className="bg-blue-600 px-6 py-3 rounded-xl hover:bg-blue-700 transition cursor-pointer"
+      >
         Add your first password
       </button>
     </main>
