@@ -19,7 +19,8 @@ origins = [
   FRONTEND_URL,
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-  "https://password-manager-client-nine.vercel.app/"
+  "https://lockerpass.site",
+  "https://www.lockerpass.site",
 ]
 
 app = FastAPI(docs_url=None)
