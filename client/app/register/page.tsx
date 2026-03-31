@@ -2,6 +2,7 @@
 import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "../store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
+import { API_URL } from "@/lib/api";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export default function RegisterPage() {
       return;
     }
 
-    const response = await fetch("http://127.0.0.1:8000/register", {
+    const response = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
