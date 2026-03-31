@@ -9,10 +9,15 @@ from app.database import get_db_connection
 from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
 from app.auth import create_access_token, get_current_user
 
+origins = [
+  "http://localhost:3000",
+  "https://your-frontend-domain.vercel.app"
+]
+
 app = FastAPI(docs_url=None)
 app.add_middleware(
   CORSMiddleware,
-  allow_origins=["http://localhost:3000"],
+  allow_origins=origins,
   allow_credentials=True,
   allow_methods=["*"],
   allow_headers=["*"],
