@@ -13,6 +13,7 @@ import { ThemeBtn } from "./ThemeBtn";
 import { AddPasswordBtn } from "./AddPasswordBtn";
 import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
+import { MobileMenu } from "./MobileMenu";
 
 export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
@@ -24,7 +25,7 @@ export default function Dashboard() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [search, setSearch] = useState("");
-  const isMobile = useMediaQuery("(max-width: 640px)");
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   useEffect(() => {
     const getUserPasswords = async () => {
@@ -130,20 +131,24 @@ export default function Dashboard() {
     <main className={`relative min-h-screen p-10`}>
       <div className="flex justify-between items-center mb-8">
         <TitleDashboard />
-        <div className="flex justify-between items-end gap-3">
-          <ThemeBtn />
-          <AddPasswordBtn
-            isMobile={isMobile}
+        {isMobile ? (
+          <MobileMenu
+            handleLogout={handleLogout}
             handleOpenModal={handleOpenModal}
           />
-          <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
-        </div>
+        ) : (
+          <div className="flex justify-between items-end gap-3">
+            <ThemeBtn />
+            <AddPasswordBtn
+              isMobile={isMobile}
+              handleOpenModal={handleOpenModal}
+            />
+            <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
+          </div>
+        )}
       </div>
       <div className="max-w-4xl mx-auto">
-        <SearchBar
-          search={search}
-          handleSearch={handleSearch}
-        />
+        <SearchBar search={search} handleSearch={handleSearch} />
         <PasswordCards
           search={search}
           passwords={passwords}
