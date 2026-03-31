@@ -36,7 +36,10 @@ def home():
 Connection to db, running app
 """
 @app.post("/register")
-def register_user(email: str, password: str):
+def register_user(
+  email: str = Form(...),
+  password: str = Form(...)
+):
   conn = get_db_connection()
   cursor = conn.cursor()
 
