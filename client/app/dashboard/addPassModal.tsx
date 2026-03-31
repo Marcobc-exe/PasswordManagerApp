@@ -39,12 +39,14 @@ export const AddPassModal: FC<Props> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          onClick={() => handleOpenModal(false)}
         >
           <motion.div
             className="bg-zinc-900 p-8 rounded-2xl w-100 shadow-xl"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold">Add new password</h2>
