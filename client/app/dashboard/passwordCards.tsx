@@ -27,7 +27,7 @@ export const PasswordCards: FC<Props> = ({
   handleDeletePassword,
 }) => {
   const darkMode = useThemeStore((state) => state.darkMode);
-  
+
   return (
     <div
       className="
@@ -62,7 +62,11 @@ export const PasswordCards: FC<Props> = ({
             >
               <div className="flex flex-col gap-1 w-2/3">
                 <p className="text-lg font-semibold">{p.website}</p>
-                <p className="text-zinc-400 text-sm">{p.username}</p>
+                <p
+                  className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
+                >
+                  {p.username}
+                </p>
                 <p className="font-mono mt-2 text-lg truncate">
                   {isVisible ? p.password : "*********"}
                 </p>
