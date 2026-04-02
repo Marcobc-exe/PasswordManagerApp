@@ -30,7 +30,7 @@ export async function loginUser(
   if (successResult.success) return successResult.data;
 
   const failedResult = LoginFailedSchema.safeParse(data);
-  if (failedResult.success) throw new Error(failedResult.data.error);
+  if (failedResult.success) throw new Error(failedResult.data.detail);
 
   throw new Error("Unexpected login response");
 }
