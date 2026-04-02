@@ -14,7 +14,7 @@ import { AddPasswordBtn } from "./AddPasswordBtn";
 import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
-import { API_URL } from "@/lib/api";
+import { API_URL } from "@/api/config";
 
 export default function Dashboard() {
   const [passwords, setPasswords] = useState<PasswordsProps[]>([]);

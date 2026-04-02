@@ -2,7 +2,9 @@
 import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "../store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
-import { API_URL } from "@/lib/api";
+import { api, API_URL } from "@/api/config";
+import { useMutation } from "@tanstack/react-query";
+import { Spinner } from "@/components/Spinner";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -15,6 +17,32 @@ export default function RegisterPage() {
   const inputTheme = darkMode
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
+
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post(
+        "/register",
+        new URLSearchParams({
+          email,
+          password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+      );
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      window.location.href = "/login";
+      alert("User created successfully");
+    },
+    onError: () => {
+      alert("Register failed");
+    },
+  });
 
   const handleRegister = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,25 +57,27 @@ export default function RegisterPage() {
       return;
     }
 
-    const response = await fetch(`${API_URL}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        email,
-        password,
-      }),
-    });
+    registerMutation.mutate();
 
-    const data = await response.json();
+    // const response = await fetch(`${API_URL}/register`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   body: new URLSearchParams({
+    //     email,
+    //     password,
+    //   }),
+    // });
 
-    if (response.ok) {
-      alert("User created successfully");
-      window.location.href = "/login";
-    } else {
-      alert(data.error || "Register failed");
-    }
+    // const data = await response.json();
+
+    // if (response.ok) {
+    //   alert("User created successfully");
+    //   window.location.href = "/login";
+    // } else {
+    //   alert(data.error || "Register failed");
+    // }
   };
 
   return (
@@ -102,9 +132,11 @@ export default function RegisterPage() {
 
         <button
           type="submit"
-          className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer"
+          className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          Create account
+          <div className="h-5 flex items-center justify-center">
+            {registerMutation.isPending ? <Spinner /> : "Create account"}
+          </div>
         </button>
 
         <p className="text-center text-sm text-zinc-400">
@@ -116,4 +148,4 @@ export default function RegisterPage() {
       </form>
     </main>
   );
-};
+}

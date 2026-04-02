@@ -2,9 +2,8 @@
 import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
-import { api } from "@/lib/api";
-import { useMutation } from "@tanstack/react-query";
 import { Spinner } from "@/components/Spinner";
+import { useLogin } from "@/features/login/login.hook";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,40 +13,25 @@ export default function LoginPage() {
   const inputTheme = darkMode
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
-
-  const loginMutation = useMutation({
-    mutationFn: async () => {
-      const response = await api.post(
-        "/login",
-        new URLSearchParams({
-          username: email,
-          password,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        },
-      );
-
-      return response.data;
-    },
-    onSuccess: (data) => {
-      if (data.access_token) {
-        localStorage.setItem("token", data.access_token);
-        window.location.href = "/dashboard";
-      } else {
-        alert("Login failed");
-      }
-    },
-    onError: () => {
-      alert("Login failed");
-    },
-  });
+  const loginMutation = useLogin();
 
   const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginMutation.mutate();
+
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (data) => {
+          localStorage.setItem("token", data.access_token);
+          window.location.href = "/dashboard";
+        },
+        onError: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Login failed";
+          alert(message);
+        },
+      },
+    );
   };
 
   return (
