@@ -1,7 +1,7 @@
 """
 Main module to run the password manager application
 """
-from fastapi import FastAPI, Depends, Form
+from fastapi import FastAPI, Depends, Form, HTTPException, status
 from fastapi_swagger_ui_theme import setup_swagger_ui_theme
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +10,7 @@ from app.encryption import hash_password, verify_password, encrypt_website_passw
 from app.auth import create_access_token, get_current_user
 import os
 from dotenv import load_dotenv
+import psycopg2
 
 load_dotenv()
 
@@ -40,7 +41,7 @@ def home():
 """
 Connection to db, running app
 """
-@app.post("/register")
+@app.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(
   email: str = Form(...),
   password: str = Form(...)
@@ -48,20 +49,36 @@ def register_user(
   conn = get_db_connection()
   cursor = conn.cursor()
 
-  hashed = hash_password(password)
+  try:
+    hashed = hash_password(password)
 
-  cursor.execute(
-    "INSERT INTO users (email, master_pass) VALUES (%s, %s)",
-    (email, hashed)
-  )
+    cursor.execute(
+      "INSERT INTO users (email, master_pass) VALUES (%s, %s)",
+      (email, hashed)
+    )
+    
+    conn.commit()
+    
+    return {
+      "message": "User registered successfully!"
+    }
+  except psycopg2.IntegrityError as exc:
+    conn.rollback()
+    raise HTTPException(
+      status_code=status.HTTP_409_CONFLICT,
+      detail="Email already registered"
+    ) from exc
+  except Exception as exc:
+    conn.rollback()
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+  finally:
+    cursor.close()
+    conn.close()
   
-  conn.commit()
-  cursor.close()
-  conn.close()
 
-  return {
-    "message": "User registered successfully!"
-  }
 
 @app.post('/login')
 def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
