@@ -45,17 +45,19 @@ export default function LoginPage() {
         <input
           type="email"
           placeholder="Email"
-          className={`w-full p-3 rounded-lg ${inputTheme}`}
+          className={`w-full p-3 rounded-lg disabled:opacity-60 disabled:cursor-not-allowed ${inputTheme}`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={loginMutation.isPending}
         />
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
-            className={`w-full p-3 rounded-lg pr-12 ${inputTheme}`}
+            className={`w-full p-3 rounded-lg pr-12 disabled:opacity-60 disabled:cursor-not-allowed ${inputTheme}`}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loginMutation.isPending}
           />
           <button
             type="button"
