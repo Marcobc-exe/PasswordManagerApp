@@ -2,7 +2,9 @@
 import { SyntheticEvent, useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
-import { API_URL } from "@/lib/api";
+import { api } from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
+import { Spinner } from "@/components/Spinner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,32 +15,39 @@ export default function LoginPage() {
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
 
+  const loginMutation = useMutation({
+    mutationFn: async () => {
+      const response = await api.post(
+        "/login",
+        new URLSearchParams({
+          username: email,
+          password,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+      );
+
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.access_token) {
+        localStorage.setItem("token", data.access_token);
+        window.location.href = "/dashboard";
+      } else {
+        alert("Login failed");
+      }
+    },
+    onError: () => {
+      alert("Login failed");
+    },
+  });
+
   const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    /* 
-      http://localhost:8000
-      http://127.0.0.1:8000/login
-    */
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        username: email,
-        password: password,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.access_token) {
-      localStorage.setItem("token", data.access_token);
-      window.location.href = "/dashboard";
-    } else {
-      // change this later, use toast notification system
-      alert("Login failed");
-    }
+    loginMutation.mutate();
   };
 
   return (
@@ -74,9 +83,12 @@ export default function LoginPage() {
         </div>
         <button
           type="submit"
-          className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer"
+          disabled={loginMutation.isPending}
+          className="w-full bg-white hover:bg-amber-50 transition text-black p-3 rounded-lg font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
         >
-          Login
+          <div className="h-5 flex items-center justify-center">
+            {loginMutation.isPending ? <Spinner /> : "Login"}
+          </div>
         </button>
         <p className="text-center text-sm text-zinc-400">
           Don&apos;t have an account?{" "}
