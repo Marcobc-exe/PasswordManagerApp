@@ -77,8 +77,6 @@ def register_user(
   finally:
     cursor.close()
     conn.close()
-  
-
 
 @app.post('/login')
 def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -86,30 +84,47 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
   password = form_data.password
   conn = get_db_connection()
   cursor = conn.cursor()
-
-  cursor.execute(
-    'SELECT master_pass FROM users WHERE email = %s',
-    (email,)
-  )
   
-  user = cursor.fetchone()
-  cursor.close()
-  conn.close()
+  try:
+    cursor.execute(
+      'SELECT master_pass FROM users WHERE email = %s',
+      (email,)
+    )
+    
+    user = cursor.fetchone()
+    
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found"
+      )
+    
+    hashed_password = user[0]
 
-  if user is None:
-    return { "error": "User not found" }
+    if not verify_password(password, hashed_password):
+      raise HTTPException(
+          status_code=status.HTTP_401_UNAUTHORIZED,
+          detail="Incorrect password"
+      )
 
-  hashed_password = user[0]
-
-  if verify_password(password, hashed_password):
     token = create_access_token({"sub": email})
 
     return {
-      "access_token": token,
-      "token_type": "bearer",
+        "access_token": token,
+        "token_type": "bearer",
     }
-  
-  return { "error" : "Incorrect password"}
+  except HTTPException as exc:
+    raise exc
+
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+
+  finally:
+    cursor.close()
+    conn.close()
 
 # In the frontend, logout just delete the token from localStorage
 @app.post('/logout')

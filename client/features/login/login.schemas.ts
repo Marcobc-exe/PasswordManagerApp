@@ -11,7 +11,7 @@ export const LoginSuccessSchema = z.object({
 });
 
 export const LoginFailedSchema = z.object({
-  error: z.string(),
+  detail: z.string(),
 });
 
 export type LoginFormDTO = z.infer<typeof LoginFormSchema>;
