@@ -48,9 +48,8 @@ export default function Dashboard() {
   };
 
   const deletePassword = async (id: number) => {
-    console.log(id);
     const token = localStorage.getItem("token");
-    //http://127.0.0.1:8000/delete-password/${id}
+
     await fetch(`${API_URL}/delete-password/${id}`, {
       method: "DELETE",
       headers: {
@@ -58,7 +57,7 @@ export default function Dashboard() {
       },
     });
 
-    setPasswords((pre) => pre.filter((p) => p.id != id));
+    window.location.reload();
   };
 
   const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
