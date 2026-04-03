@@ -15,7 +15,10 @@ import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
 import { API_URL } from "@/api/config";
-import { usePasswords } from "@/features/passwords/passwords.hook";
+import {
+  usePasswords,
+  useSavePassword,
+} from "@/features/passwords/passwords.hook";
 
 export default function Dashboard() {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -25,12 +28,9 @@ export default function Dashboard() {
   const [password, setPassword] = useState("");
   const [search, setSearch] = useState("");
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const {
-    data: passwords = [],
-    isLoading,
-    error,
-  } = usePasswords();
-
+  const { data: passwords = [], isLoading, error } = usePasswords();
+  const savePasswordMutation = useSavePassword();
+  
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
   const handleSetPassword = (value: string) => setPassword(value);
@@ -62,23 +62,26 @@ export default function Dashboard() {
 
   const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-
-    const formData = new FormData();
-    formData.append("website", website);
-    formData.append("username", username);
-    formData.append("password", password);
-    //http://127.0.0.1:8000/save-password
-    await fetch(`${API_URL}/save-password`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
+    savePasswordMutation.mutate(
+      {
+        website,
+        username,
+        password,
       },
-      body: formData,
-    });
-
-    setOpenModal(false);
-    window.location.reload();
+      {
+        onSuccess: () => {
+          setOpenModal(false);
+          setWebsite("");
+          setUsername("");
+          setPassword("");
+        },
+        onError: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Failed to save password";
+          alert(message);
+        },
+      },
+    );
   };
 
   const handleLogout = () => {
@@ -88,7 +91,8 @@ export default function Dashboard() {
 
   if (isLoading) return <Loading />;
   if (error) {
-    const message = error instanceof Error ? error.message : "Something went wrong"
+    const message =
+      error instanceof Error ? error.message : "Something went wrong";
     return <ErrorMsg error={message} />;
   }
   if (passwords.length == 0) {
