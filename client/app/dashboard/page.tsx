@@ -1,9 +1,8 @@
 "use client";
 
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { useMediaQuery } from "@mui/material";
 import { AddPassModal } from "./addPassModal";
-import { PasswordsProps } from "../type";
 import { PasswordCards } from "./passwordCards";
 import { NoPasswordsYet } from "./noPasswords";
 import { Loading } from "./Loading";
@@ -14,7 +13,6 @@ import { AddPasswordBtn } from "./AddPasswordBtn";
 import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
-import { API_URL } from "@/api/config";
 import {
   usePasswords,
   useSavePassword,
@@ -30,7 +28,7 @@ export default function Dashboard() {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data: passwords = [], isLoading, error } = usePasswords();
   const savePasswordMutation = useSavePassword();
-  
+
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
   const handleSetPassword = (value: string) => setPassword(value);
@@ -45,19 +43,6 @@ export default function Dashboard() {
 
   const copyPasswords = (passwords: string) => {
     navigator.clipboard.writeText(passwords);
-  };
-
-  const deletePassword = async (id: number) => {
-    const token = localStorage.getItem("token");
-
-    await fetch(`${API_URL}/delete-password/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    window.location.reload();
   };
 
   const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -142,7 +127,6 @@ export default function Dashboard() {
           visiblePasswords={visiblePasswords}
           handleTogglePassword={togglePassword}
           handleCopyPasswords={copyPasswords}
-          handleDeletePassword={deletePassword}
         />
       </div>
       <AddPassModal
