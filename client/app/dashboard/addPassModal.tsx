@@ -2,6 +2,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { FC, SyntheticEvent } from "react";
 import { useThemeStore } from "../store/themeStore";
+import { useSavePassword } from "@/features/passwords/passwords.hook";
+import { Spinner } from "@/components/Spinner";
 
 type Props = {
   openModal: boolean;
@@ -26,11 +28,12 @@ export const AddPassModal: FC<Props> = ({
   handleSavePassword,
   handleOpenModal,
 }) => {
+  const savePasswordMutation = useSavePassword();
   const darkMode = useThemeStore((state) => state.darkMode);
-  const inputTheme = darkMode 
-    ? "bg-[#153746] hover:bg-[#15495f]" 
-    : "bg-[#9c7f53] hover:bg-[#b58b4d]"
-  
+  const inputTheme = darkMode
+    ? "bg-[#153746] hover:bg-[#15495f]"
+    : "bg-[#9c7f53] hover:bg-[#b58b4d]";
+
   return (
     <AnimatePresence>
       {openModal && (
@@ -49,10 +52,13 @@ export const AddPassModal: FC<Props> = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold">Add new password</h2>
+              <h2 className="text-xl font-bold text-white">Add new password</h2>
 
-              <button className="cursor-pointer" onClick={() => handleOpenModal(false)}>
-                <X size={20} />
+              <button
+                className="cursor-pointer"
+                onClick={() => handleOpenModal(false)}
+              >
+                <X size={20} color="white"/>
               </button>
             </div>
 
@@ -63,6 +69,7 @@ export const AddPassModal: FC<Props> = ({
                 className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={website}
                 onChange={(e) => handleSetWebsite(e.target.value)}
+                disabled={savePasswordMutation.isPending}
               />
 
               <input
@@ -71,6 +78,7 @@ export const AddPassModal: FC<Props> = ({
                 className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={username}
                 onChange={(e) => handleSetUsername(e.target.value)}
+                disabled={savePasswordMutation.isPending}
               />
 
               <input
@@ -79,13 +87,21 @@ export const AddPassModal: FC<Props> = ({
                 className={`p-3 rounded-lg outline-none ${inputTheme}`}
                 value={password}
                 onChange={(e) => handleSetPassword(e.target.value)}
+                disabled={savePasswordMutation.isPending}
               />
 
               <button
                 type="submit"
-                className="bg-blue-600 p-3 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+                disabled={savePasswordMutation.isPending}
+                className="w-full bg-blue-600 hover:bg-blue-700 transition text-white p-3 rounded-lg font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Save password
+                <div className="h-5 flex items-center justify-center">
+                  {savePasswordMutation.isPending ? (
+                    <Spinner color="border-white" />
+                  ) : (
+                    "Save password"
+                  )}
+                </div>
               </button>
             </form>
           </motion.div>

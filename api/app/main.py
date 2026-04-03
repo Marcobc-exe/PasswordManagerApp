@@ -138,28 +138,51 @@ def save_password(
   password: str = Form(...),
   user_email: str = Depends(get_current_user),
 ):
+  website = website.strip()
+  username = username.strip()
+  password = password.strip()
+
+  if not website or not username or not password:
+    raise HTTPException(
+      status_code=status.HTTP_400_BAD_REQUEST,
+      detail="All fields are required"
+    )
+    
   conn = get_db_connection()
   cursor = conn.cursor()
   
-  cursor.execute("SELECT id FROM users WHERE email = %s",(user_email,))
-  user = cursor.fetchone()
+  try:
+    cursor.execute("SELECT id FROM users WHERE email = %s",(user_email,))
+    user = cursor.fetchone()
 
-  if user is None:
-    return { "error": "User not found" }
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found"
+      )
 
-  user_id = user[0]
-  encrypted = encrypt_website_password(password)
+    user_id = user[0]
+    encrypted = encrypt_website_password(password)
 
-  cursor.execute(
-    "INSERT INTO passwords (user_id, website, username, password) VALUES (%s, %s, %s, %s)",
-    (user_id, website, username, encrypted)
-  )
+    cursor.execute(
+      "INSERT INTO passwords (user_id, website, username, password) VALUES (%s, %s, %s, %s)",
+      (user_id, website, username, encrypted)
+    )
+    conn.commit()
+
+    return { "message": "Password saved securely" }
   
-  conn.commit()
-  cursor.close()
-  conn.close()
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+  finally:
+    cursor.close()
+    conn.close()
 
-  return { "message": "Password saved securely" }
 
 @app.get("/get-passwords")
 def get_passwords(user_email: str = Depends(get_current_user)):
