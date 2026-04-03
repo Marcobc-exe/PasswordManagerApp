@@ -8,6 +8,8 @@ import {
 import { Eye, EyeOff, Copy, Trash2 } from "lucide-react";
 import { FC } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
+import { useDeletePassword } from "@/features/passwords/passwords.hook";
+import { AnimatePresence, motion } from "framer-motion";
 
 type Props = {
   search: string;
@@ -15,7 +17,6 @@ type Props = {
   visiblePasswords: number[];
   handleTogglePassword: (value: number) => void;
   handleCopyPasswords: (value: string) => void;
-  handleDeletePassword: (value: number) => void;
 };
 
 export const PasswordCards: FC<Props> = ({
@@ -24,123 +25,132 @@ export const PasswordCards: FC<Props> = ({
   visiblePasswords,
   handleTogglePassword,
   handleCopyPasswords,
-  handleDeletePassword,
 }) => {
   const darkMode = useThemeStore((state) => state.darkMode);
+  const deletePasswordMutation = useDeletePassword();
+
+  const handleDelete = (id: number) => {
+    deletePasswordMutation.mutate(id, {
+      onError: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Delete failed";
+        alert(message);
+      },
+    });
+  };
 
   return (
-    <div
-      className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          gap-4
-          w-full
-          max-w-4xl
-          mx-auto
-          place-items-center
-        "
-    >
-      {passwords
-        .filter((p) =>
-          p.website.toLocaleLowerCase().includes(search.toLowerCase()),
-        )
-        .map((p: PasswordsProps) => {
-          const isVisible = visiblePasswords.includes(p.id);
+    <AnimatePresence>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-4xl mx-auto place-items-center">
+        {passwords
+          .filter((p) =>
+            p.website.toLocaleLowerCase().includes(search.toLowerCase()),
+          )
+          .map((p: PasswordsProps) => {
+            const isVisible = visiblePasswords.includes(p.id);
 
-          return (
-            <div
-              key={p.website}
-              className={`
-                w-full max-w-md  p-5 rounded-2xl flex justify-between items-center transition
-                ${
-                  darkMode
-                    ? "bg-[#0f2027] hover:bg-[#0d1b21] text-white"
-                    : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
-                }
-              `}
-            >
-              <div className="flex flex-col gap-1 w-2/3">
-                <p className="text-lg font-semibold">{p.website}</p>
-                <p
-                  className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
-                >
-                  {p.username}
-                </p>
-                <p className="font-mono mt-2 text-lg truncate">
-                  {isVisible ? p.password : "*********"}
-                </p>
-              </div>
-
-              <TooltipProvider>
-                <div className="flex gap-2">
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => handleTogglePassword(p.id)}
-                        className={`
-                          p-2 rounded-lg transition cursor-pointer
-                          ${
-                            darkMode
-                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                              : "bg-[#ffd391] hover:bg-[#f9c16c]"
-                          }
-                        `}
-                      >
-                        {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{isVisible ? "Hide" : "Show"}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => handleCopyPasswords(p.password)}
-                        className={`
-                          p-2 rounded-lg transition cursor-pointer
-                          ${
-                            darkMode
-                              ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                              : "bg-[#ffd391] hover:bg-[#f9c16c]"
-                          }
-                        `}
-                      >
-                        <Copy size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Copy</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <button
-                        onClick={() => handleDeletePassword(p.id)}
-                        className={`
-                          p-2 rounded-lg transition cursor-pointer
-                          ${
-                            darkMode
-                              ? "bg-[#21414f] hover:bg-red-400"
-                              : "bg-[#e49d33] hover:bg-red-400"
-                          }
-                        `}
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Delete</p>
-                    </TooltipContent>
-                  </Tooltip>
+            return (
+              <motion.div
+                key={p.website}
+                layout
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: -8 }}
+                transition={{ duration: 0.4 }}
+                className={`
+                  w-full max-w-md  p-5 rounded-2xl flex justify-between items-center transition
+                  ${
+                    darkMode
+                      ? "bg-[#0f2027] hover:bg-[#0d1b21] text-white"
+                      : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
+                  }
+                `}
+              >
+                <div className="flex flex-col gap-1 w-2/3">
+                  <p className="text-lg font-semibold">{p.website}</p>
+                  <p
+                    className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
+                  >
+                    {p.username}
+                  </p>
+                  <p className="font-mono mt-2 text-lg truncate">
+                    {isVisible ? p.password : "*********"}
+                  </p>
                 </div>
-              </TooltipProvider>
-            </div>
-          );
-        })}
-    </div>
+
+                <TooltipProvider>
+                  <div className="flex gap-2">
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
+                          onClick={() => handleTogglePassword(p.id)}
+                          className={`
+                            p-2 rounded-lg transition cursor-pointer
+                            ${
+                              darkMode
+                                ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                                : "bg-[#ffd391] hover:bg-[#f9c16c]"
+                            }
+                          `}
+                          disabled={deletePasswordMutation.isPending}
+                        >
+                          {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{isVisible ? "Hide" : "Show"}</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
+                          onClick={() => handleCopyPasswords(p.password)}
+                          className={`
+                            p-2 rounded-lg transition cursor-pointer
+                            ${
+                              darkMode
+                                ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                                : "bg-[#ffd391] hover:bg-[#f9c16c]"
+                            }
+                          `}
+                          disabled={deletePasswordMutation.isPending}
+                        >
+                          <Copy size={18} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Copy</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
+                          onClick={() => handleDelete(p.id)}
+                          className={`
+                            p-2 rounded-lg transition cursor-pointer
+                            ${
+                              darkMode
+                                ? "bg-[#21414f] hover:bg-red-400"
+                                : "bg-[#e49d33] hover:bg-red-400"
+                            }
+                          `}
+                          disabled={deletePasswordMutation.isPending}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Delete</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
+              </motion.div>
+            );
+          })}
+      </div>
+    </AnimatePresence>
   );
 };

@@ -1,11 +1,13 @@
 import {
+  DeletePasswordDTO,
   PasswordListDTO,
   PasswordListSchema,
-  PasswordsFailedSchema,
+  PasswordFailedSchema,
   PasswordSuccessSchema,
   SavePasswordFormDTO,
   SavePasswordFormSchema,
-  SavePasswordSuccessDTO,
+  PasswordSuccessDTO,
+  DeletePasswordSchema,
 } from "@/features/passwords/passwords.schema";
 import { api } from "./config";
 
@@ -22,7 +24,7 @@ export async function getPasswords(): Promise<PasswordListDTO> {
   const success = PasswordListSchema.safeParse(data);
   if (success.success) return success.data;
 
-  const failed = PasswordsFailedSchema.safeParse(data);
+  const failed = PasswordFailedSchema.safeParse(data);
   if (failed.success) throw new Error(failed.data.detail);
 
   throw new Error("Unexpected get-passwords response");
@@ -30,7 +32,7 @@ export async function getPasswords(): Promise<PasswordListDTO> {
 
 export async function savePassword(
   values: SavePasswordFormDTO,
-): Promise<SavePasswordSuccessDTO> {
+): Promise<PasswordSuccessDTO> {
   const parsedValues = SavePasswordFormSchema.parse(values);
   const token = localStorage.getItem("token");
 
@@ -49,8 +51,30 @@ export async function savePassword(
   const success = PasswordSuccessSchema.safeParse(data);
   if (success.success) return success.data;
 
-  const failed = PasswordsFailedSchema.safeParse(data);
+  const failed = PasswordFailedSchema.safeParse(data);
   if (failed.success) throw new Error(failed.data.detail);
 
   throw new Error("Unexpected save-password response");
+}
+
+export async function deletePassword(
+  value: DeletePasswordDTO,
+): Promise<PasswordSuccessDTO> {
+  const id = DeletePasswordSchema.parse(value);
+  const token = localStorage.getItem("token");
+
+  const { data } = await api.delete(`/delete-password/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    validateStatus: () => true,
+  });
+
+  const success = PasswordSuccessSchema.safeParse(data);
+  if (success.success) return success.data;
+
+  const failed = PasswordFailedSchema.safeParse(data);
+  if (failed.success) throw new Error(failed.data.detail);
+
+  throw new Error("Unexpected delete-password response");
 }

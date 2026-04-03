@@ -183,7 +183,6 @@ def save_password(
     cursor.close()
     conn.close()
 
-
 @app.get("/get-passwords")
 def get_passwords(user_email: str = Depends(get_current_user)):
   conn = get_db_connection()
@@ -240,21 +239,34 @@ def get_passwords(user_email: str = Depends(get_current_user)):
 def delete_password(password_id: int, user_email: str = Depends(get_current_user)):
   conn = get_db_connection()
   cursor = conn.cursor()
-  cursor.execute("SELECT id FROM users WHERE email = %s", (user_email,))
-  user = cursor.fetchone()
+  
+  try:
+    cursor.execute("SELECT id FROM users WHERE email = %s", (user_email,))
+    user = cursor.fetchone()
+    
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found"
+      )
+    
+    user_id = user[0]
 
-  if user is None:
-    return { "error": "User not found" }
-
-  user_id = user[0]
-
-  cursor.execute(
-    "DELETE FROM passwords WHERE id = %s AND user_id = %s",
-    (password_id, user_id)
-  )
-
-  conn.commit()
-  cursor.close()
-  conn.close()
-
-  return { "message": "Password deleted successfully" }
+    cursor.execute(
+      "DELETE FROM passwords WHERE id = %s AND user_id = %s",
+      (password_id, user_id)
+    )
+    conn.commit()
+    
+    return { "message": "Password deleted successfully" }
+    
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+  finally:
+    cursor.close()
+    conn.close()

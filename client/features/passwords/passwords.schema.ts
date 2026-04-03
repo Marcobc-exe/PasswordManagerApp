@@ -1,15 +1,15 @@
-import z from "zod";
+import { z } from "zod";
 
-export const PasswordsItemSchema = z.object({
+export const PasswordItemSchema = z.object({
   id: z.number(),
   website: z.string(),
   username: z.string(),
   password: z.string(),
 });
 
-export const PasswordListSchema = z.array(PasswordsItemSchema);
+export const PasswordListSchema = z.array(PasswordItemSchema);
 
-export const PasswordsFailedSchema = z.object({
+export const PasswordFailedSchema = z.object({
   detail: z.string(),
 });
 
@@ -23,8 +23,11 @@ export const PasswordSuccessSchema = z.object({
   message: z.string(),
 });
 
-export type PasswordItemDTO = z.infer<typeof PasswordsItemSchema>;
+export const DeletePasswordSchema = z.number();
+
+export type PasswordItemDTO = z.infer<typeof PasswordItemSchema>;
 export type PasswordListDTO = z.infer<typeof PasswordListSchema>;
-export type PasswordFailedDTO = z.infer<typeof PasswordsFailedSchema>;
+export type PasswordFailedDTO = z.infer<typeof PasswordFailedSchema>;
 export type SavePasswordFormDTO = z.infer<typeof SavePasswordFormSchema>;
-export type SavePasswordSuccessDTO = z.infer<typeof PasswordSuccessSchema>;
+export type PasswordSuccessDTO = z.infer<typeof PasswordSuccessSchema>;
+export type DeletePasswordDTO = z.infer<typeof DeletePasswordSchema>;
