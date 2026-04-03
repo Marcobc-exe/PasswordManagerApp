@@ -15,11 +15,12 @@ import { LogoutBtn } from "./LogoutBtn";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
 import { API_URL } from "@/api/config";
+import { usePasswords } from "@/features/passwords/passwords.hook";
 
 export default function Dashboard() {
-  const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [website, setWebsite] = useState("");
@@ -27,51 +28,12 @@ export default function Dashboard() {
   const [password, setPassword] = useState("");
   const [search, setSearch] = useState("");
   const isMobile = useMediaQuery("(max-width: 600px)");
-
-  useEffect(() => {
-    const getUserPasswords = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-          setError("User not authenticated");
-          setLoading(false);
-          return;
-        }
-
-        /* 
-          http://localhost:8000
-          http://127.0.0.1:8000/get-passwords
-        */
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-passwords`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (res.status === 401) {
-          localStorage.removeItem("token");
-          window.location.href = "/login";
-          return;
-        }
-
-        if (!res.ok) {
-          setError("Something went wrong fetching passwords");
-          setLoading(false);
-          return;
-        }
-
-        const data = await res.json();
-        setPasswords(data);
-      } catch (err) {
-        setError("Server error");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getUserPasswords();
-  }, []);
+  const {
+    data: passwords = [],
+    isLoading,
+    isError,
+    error,
+  } = usePasswords();
 
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
@@ -129,8 +91,11 @@ export default function Dashboard() {
     window.location.href = "/login";
   };
 
-  if (loading) return <Loading />;
-  if (error) return <ErrorMsg error={error} />;
+  if (isLoading) return <Loading />;
+  if (error) {
+    const message = error instanceof Error ? error.message : "Something went wrong"
+    return <ErrorMsg error={message} />;
+  }
   if (passwords.length == 0) {
     return (
       <>

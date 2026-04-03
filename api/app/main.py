@@ -165,40 +165,53 @@ def save_password(
 def get_passwords(user_email: str = Depends(get_current_user)):
   conn = get_db_connection()
   cursor = conn.cursor()
-
-  cursor.execute(
-    "SELECT id FROM users WHERE email =  %s",
-    (user_email,)
-  )
   
-  user = cursor.fetchone()
+  try:
+    cursor.execute(
+      "SELECT id FROM users WHERE email =  %s",
+      (user_email,)
+    )
+    
+    user = cursor.fetchone()
+    
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found"
+      )
+
+    user_id = user[0]
+
+    cursor.execute(
+      "SELECT id, website, username, password FROM passwords WHERE user_id = %s",
+      (user_id,)
+    )
+    
+    results = cursor.fetchall()
+    data = []
+
+    for id, website, username, encrypted_password in results:
+      decrypted = decrypt_website_password(encrypted_password)
+
+      data.append({
+        "id": id,
+        "website" : website,
+        "username": username,
+        "password": decrypted
+      })
   
-  if user is None:
-    return { "Error": "User not found" }
+    return data
 
-  user_id = user[0]
-
-  cursor.execute(
-    "SELECT id, website, username, password FROM passwords WHERE user_id = %s",
-    (user_id,)
-  )
-  
-  results = cursor.fetchall()
-  cursor.close()
-  conn.close()
-  data = []
-
-  for id, website, username, encrypted_password in results:
-    decrypted = decrypt_website_password(encrypted_password)
-
-    data.append({
-      "id": id,
-      "website" : website,
-      "username": username,
-      "password": decrypted
-    })
-  
-  return data
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+  finally:
+    cursor.close()
+    conn.close()
 
 @app.delete('/delete-password/{password_id}')
 def delete_password(password_id: int, user_email: str = Depends(get_current_user)):
