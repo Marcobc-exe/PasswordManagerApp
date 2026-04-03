@@ -18,9 +18,6 @@ import { API_URL } from "@/api/config";
 import { usePasswords } from "@/features/passwords/passwords.hook";
 
 export default function Dashboard() {
-  // const [passwords, setPasswords] = useState<PasswordsProps[]>([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [website, setWebsite] = useState("");
@@ -31,7 +28,6 @@ export default function Dashboard() {
   const {
     data: passwords = [],
     isLoading,
-    isError,
     error,
   } = usePasswords();
 
