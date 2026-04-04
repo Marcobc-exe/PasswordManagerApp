@@ -1,16 +1,22 @@
 """
 Main module to run the password manager application
 """
-from fastapi import FastAPI, Depends, Form, HTTPException, status
-from fastapi_swagger_ui_theme import setup_swagger_ui_theme
-from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
-from app.database import get_db_connection
-from app.encryption import hash_password, verify_password, encrypt_website_password, decrypt_website_password
-from app.auth import create_access_token, get_current_user
 import os
-from dotenv import load_dotenv
 import psycopg2
+from jose import jwt
+from dotenv import load_dotenv
+from app.database import get_db_connection
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
+from app.auth import create_access_token, get_current_user, create_refresh_token, SECRET_KEY, ALGORITHM
+from fastapi_swagger_ui_theme import setup_swagger_ui_theme
+from fastapi import FastAPI, Depends, Form, HTTPException, status
+from app.encryption import hash_password, encrypt_website_password, decrypt_website_password
+from app.utils import authenticate_user
+from pydantic import BaseModel
+
+class RefreshTokenRequest(BaseModel):
+  refresh_token: str
 
 load_dotenv()
 
@@ -79,54 +85,41 @@ def register_user(
     conn.close()
 
 @app.post('/login')
-def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
-  email = form_data.username
-  password = form_data.password
-  conn = get_db_connection()
-  cursor = conn.cursor()
+def login(formData: OAuth2PasswordRequestForm = Depends()):
+  user = authenticate_user(formData.username, formData.password)
   
+  if not user:
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+  
+  access_token = create_access_token(data={"sub": user["email"]})
+  refresh_token = create_refresh_token(data={"sub": user["email"]})
+
+  return {
+      "access_token": access_token,
+      "refresh_token": refresh_token,
+      "token_type": "bearer"
+  }
+
+@app.post("/refresh")
+def refresh_token(data: RefreshTokenRequest):
   try:
-    cursor.execute(
-      'SELECT master_pass FROM users WHERE email = %s',
-      (email,)
-    )
-    
-    user = cursor.fetchone()
-    
-    if user is None:
-      raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="User not found"
-      )
-    
-    hashed_password = user[0]
+    payload = jwt.decode(data.refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
 
-    if not verify_password(password, hashed_password):
-      raise HTTPException(
-          status_code=status.HTTP_401_UNAUTHORIZED,
-          detail="Incorrect password"
-      )
+    if payload.get("type") != "refresh":
+      raise HTTPException(status_code=401, detail="Invalid token type")
 
-    token = create_access_token({"sub": email})
+    email = payload.get("sub")
+
+    new_access_token = create_access_token(data={"sub": email})
 
     return {
-        "access_token": token,
-        "token_type": "bearer",
+      "access_token": new_access_token,
+      "token_type": "bearer"
     }
-  except HTTPException as exc:
-    raise exc
 
-  except Exception as exc:
-    raise HTTPException(
-      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-      detail="Unexpected server error"
-    ) from exc
+  except:
+    raise HTTPException(status_code=401, detail="Invalid refresh token")
 
-  finally:
-    cursor.close()
-    conn.close()
-
-# In the frontend, logout just delete the token from localStorage
 @app.post('/logout')
 def logout():
   return { "message": "User logged out successfully" }
@@ -270,3 +263,4 @@ def delete_password(password_id: int, user_email: str = Depends(get_current_user
   finally:
     cursor.close()
     conn.close()
+
