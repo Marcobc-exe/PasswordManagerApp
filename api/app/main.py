@@ -79,10 +79,6 @@ def register_user(
     cursor.close()
     conn.close()
 
-@app.post('/logout')
-def logout():
-  return { "message": "User logged out successfully" }
-
 @app.post("/save-password")
 def save_password(
   website: str = Form(...),
