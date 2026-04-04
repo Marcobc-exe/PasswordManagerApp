@@ -3,20 +3,14 @@ Main module to run the password manager application
 """
 import os
 import psycopg2
-from jose import jwt
 from dotenv import load_dotenv
 from app.database import get_db_connection
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordRequestForm
-from app.auth import create_access_token, get_current_user, create_refresh_token, SECRET_KEY, ALGORITHM
 from fastapi_swagger_ui_theme import setup_swagger_ui_theme
 from fastapi import FastAPI, Depends, Form, HTTPException, status
 from app.encryption import hash_password, encrypt_website_password, decrypt_website_password
-from app.utils import authenticate_user
-from pydantic import BaseModel
-
-class RefreshTokenRequest(BaseModel):
-  refresh_token: str
+from app.auth import get_current_user
+from app.auth.routes import router as auth_router
 
 load_dotenv()
 
@@ -31,6 +25,7 @@ origins = [
 ]
 
 app = FastAPI(docs_url=None)
+app.include_router(auth_router)
 app.add_middleware(
   CORSMiddleware,
   allow_origins=origins,
@@ -83,42 +78,6 @@ def register_user(
   finally:
     cursor.close()
     conn.close()
-
-@app.post('/login')
-def login(formData: OAuth2PasswordRequestForm = Depends()):
-  user = authenticate_user(formData.username, formData.password)
-  
-  if not user:
-    raise HTTPException(status_code=401, detail="Invalid credentials")
-  
-  access_token = create_access_token(data={"sub": user["email"]})
-  refresh_token = create_refresh_token(data={"sub": user["email"]})
-
-  return {
-      "access_token": access_token,
-      "refresh_token": refresh_token,
-      "token_type": "bearer"
-  }
-
-@app.post("/refresh")
-def refresh_token(data: RefreshTokenRequest):
-  try:
-    payload = jwt.decode(data.refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
-
-    if payload.get("type") != "refresh":
-      raise HTTPException(status_code=401, detail="Invalid token type")
-
-    email = payload.get("sub")
-
-    new_access_token = create_access_token(data={"sub": email})
-
-    return {
-      "access_token": new_access_token,
-      "token_type": "bearer"
-    }
-
-  except:
-    raise HTTPException(status_code=401, detail="Invalid refresh token")
 
 @app.post('/logout')
 def logout():
