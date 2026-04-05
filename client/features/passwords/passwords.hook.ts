@@ -8,13 +8,12 @@ import {
   DeletePasswordDTO,
   PasswordListDTO,
   SavePasswordFormDTO,
-} from "./passwords.schema";
+} from "./passwords.schemas";
 
 export function usePasswords() {
   return useQuery({
     queryKey: ["passwords"],
     queryFn: getPasswords,
-    staleTime: 30_000,
   });
 }
 

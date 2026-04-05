@@ -4,6 +4,7 @@ import { useThemeStore } from "@/app/store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
 import { useLogin } from "@/features/login/login.hook";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function LoginPage() {
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
   const loginMutation = useLogin();
+  const router = useRouter()
 
   const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,9 +23,8 @@ export default function LoginPage() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: (data) => {
-          localStorage.setItem("token", data.access_token);
-          window.location.href = "/dashboard";
+        onSuccess: () => {
+          router.push("/dashboard");
         },
         onError: (error) => {
           const message =

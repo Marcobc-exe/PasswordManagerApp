@@ -7,6 +7,7 @@ export const LoginFormSchema = z.object({
 
 export const LoginSuccessSchema = z.object({
   access_token: z.string(),
+  refresh_token: z.string(),
   token_type: z.string(),
 });
 

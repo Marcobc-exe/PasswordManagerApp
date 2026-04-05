@@ -4,7 +4,7 @@ import {
   RegisterFormSchema,
   RegisterSuccessDTO,
   RegisterSuccessSchema,
-} from "@/features/register/register.shema";
+} from "@/features/register/register.schemas";
 import { api } from "./config";
 
 export async function registerUser(
