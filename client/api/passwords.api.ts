@@ -8,16 +8,11 @@ import {
   SavePasswordFormSchema,
   PasswordSuccessDTO,
   DeletePasswordSchema,
-} from "@/features/passwords/passwords.schema";
+} from "@/features/passwords/passwords.schemas";
 import { api } from "./config";
 
 export async function getPasswords(): Promise<PasswordListDTO> {
-  const token = localStorage.getItem("token");
-
   const { data } = await api.get("/get-passwords", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     validateStatus: () => true,
   });
 

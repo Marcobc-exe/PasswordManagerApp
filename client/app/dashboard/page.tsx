@@ -17,6 +17,7 @@ import {
   usePasswords,
   useSavePassword,
 } from "@/features/passwords/passwords.hook";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 export default function Dashboard() {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -100,46 +101,48 @@ export default function Dashboard() {
   }
 
   return (
-    <main className={`relative min-h-screen p-10`}>
-      <div className="flex justify-between items-center mb-8">
-        <TitleDashboard />
-        {isMobile ? (
-          <MobileMenu
-            handleLogout={handleLogout}
-            handleOpenModal={handleOpenModal}
-          />
-        ) : (
-          <div className="flex justify-between items-end gap-3">
-            <ThemeBtn />
-            <AddPasswordBtn
-              isMobile={isMobile}
+    <ProtectedRoute>
+      <main className={`relative min-h-screen p-10`}>
+        <div className="flex justify-between items-center mb-8">
+          <TitleDashboard />
+          {isMobile ? (
+            <MobileMenu
+              handleLogout={handleLogout}
               handleOpenModal={handleOpenModal}
             />
-            <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
-          </div>
-        )}
-      </div>
-      <div className="max-w-4xl mx-auto">
-        <SearchBar search={search} handleSearch={handleSearch} />
-        <PasswordCards
-          search={search}
-          passwords={passwords}
-          visiblePasswords={visiblePasswords}
-          handleTogglePassword={togglePassword}
-          handleCopyPasswords={copyPasswords}
+          ) : (
+            <div className="flex justify-between items-end gap-3">
+              <ThemeBtn />
+              <AddPasswordBtn
+                isMobile={isMobile}
+                handleOpenModal={handleOpenModal}
+              />
+              <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
+            </div>
+          )}
+        </div>
+        <div className="max-w-4xl mx-auto">
+          <SearchBar search={search} handleSearch={handleSearch} />
+          <PasswordCards
+            search={search}
+            passwords={passwords}
+            visiblePasswords={visiblePasswords}
+            handleTogglePassword={togglePassword}
+            handleCopyPasswords={copyPasswords}
+          />
+        </div>
+        <AddPassModal
+          openModal={openModal}
+          website={website}
+          username={username}
+          password={password}
+          handleSetWebsite={handleSetWebsite}
+          handleSetUsername={handleSetUsername}
+          handleSetPassword={handleSetPassword}
+          handleSavePassword={handleSavePassword}
+          handleOpenModal={handleOpenModal}
         />
-      </div>
-      <AddPassModal
-        openModal={openModal}
-        website={website}
-        username={username}
-        password={password}
-        handleSetWebsite={handleSetWebsite}
-        handleSetUsername={handleSetUsername}
-        handleSetPassword={handleSetPassword}
-        handleSavePassword={handleSavePassword}
-        handleOpenModal={handleOpenModal}
-      />
-    </main>
+      </main>
+    </ProtectedRoute>
   );
 }
