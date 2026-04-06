@@ -10,6 +10,7 @@ import {
   DeletePasswordSchema,
 } from "@/features/passwords/passwords.schemas";
 import { api } from "./config";
+import { getAccessToken } from "@/helpers/helpers";
 
 export async function getPasswords(): Promise<PasswordListDTO> {
   const { data } = await api.get("/get-passwords", {
@@ -29,7 +30,7 @@ export async function savePassword(
   values: SavePasswordFormDTO,
 ): Promise<PasswordSuccessDTO> {
   const parsedValues = SavePasswordFormSchema.parse(values);
-  const token = localStorage.getItem("token");
+  const token = getAccessToken();
 
   const formData = new FormData();
   formData.append("website", parsedValues.website);
@@ -41,6 +42,7 @@ export async function savePassword(
       Authorization: `Bearer ${token}`,
     },
     validateStatus: () => true,
+    skipAuthRefresh: true
   });
 
   const success = PasswordSuccessSchema.safeParse(data);
@@ -56,13 +58,14 @@ export async function deletePassword(
   value: DeletePasswordDTO,
 ): Promise<PasswordSuccessDTO> {
   const id = DeletePasswordSchema.parse(value);
-  const token = localStorage.getItem("token");
+  const token = getAccessToken();
 
   const { data } = await api.delete(`/delete-password/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
     validateStatus: () => true,
+    skipAuthRefresh: true
   });
 
   const success = PasswordSuccessSchema.safeParse(data);
