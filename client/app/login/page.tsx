@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
 import { useLogin } from "@/features/login/login.hook";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,7 +30,8 @@ export default function LoginPage() {
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Login failed";
-          alert(message);
+          const messageParsed = JSON.parse(message);
+          toast.warning(messageParsed[0]?.message || message);
         },
       },
     );

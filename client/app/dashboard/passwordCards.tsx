@@ -10,6 +10,7 @@ import { FC } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 import { useDeletePassword } from "@/features/passwords/passwords.hook";
 import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "sonner";
 
 type Props = {
   search: string;
@@ -31,10 +32,14 @@ export const PasswordCards: FC<Props> = ({
 
   const handleDelete = (id: number) => {
     deletePasswordMutation.mutate(id, {
+      // onSuccess: () => {
+
+      // },
       onError: (error) => {
         const message =
           error instanceof Error ? error.message : "Delete failed";
-        alert(message);
+        const messageParsed = JSON.parse(message);
+        toast.warning(messageParsed[0]?.message || message);
       },
     });
   };

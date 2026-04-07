@@ -4,6 +4,7 @@ import { useThemeStore } from "../store/themeStore";
 import { Eye, EyeOff } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
 import { useRegister } from "@/features/register/register.hook";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -22,26 +23,25 @@ export default function RegisterPage() {
     e.preventDefault();
 
     if (!email || !password || !confirmPassword) {
-      alert("Please complete all fields");
-      return;
+      return toast.warning("Please complete all fields");
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
-      return;
+      return toast.warning("Passwords do not match");
     }
 
     registerMutation.mutate(
       { email, password },
       {
         onSuccess: () => {
-          alert("User created successfully");
+          toast.warning("");
           window.location.href = "/login";
         },
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Register failed";
-          alert(message);
+          const messageParsed = JSON.parse(message);
+          toast.warning(messageParsed[0]?.message || message);
         },
       },
     );

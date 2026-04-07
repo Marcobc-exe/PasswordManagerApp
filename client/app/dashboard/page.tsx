@@ -18,6 +18,7 @@ import {
   useSavePassword,
 } from "@/features/passwords/passwords.hook";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -64,7 +65,8 @@ export default function Dashboard() {
         onError: (error) => {
           const message =
             error instanceof Error ? error.message : "Failed to save password";
-          alert(message);
+          const messageParsed = JSON.parse(message);
+          toast.warning(messageParsed[0]?.message || message);
         },
       },
     );

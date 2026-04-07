@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
 import { ThemeWrapper } from "./Theme";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "LockerPass",
@@ -17,7 +18,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <ThemeWrapper>{children}</ThemeWrapper>
+          <ThemeWrapper>
+            {children}
+            <Toaster richColors position="bottom-left" />
+          </ThemeWrapper>
         </Providers>
       </body>
     </html>
