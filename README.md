@@ -17,15 +17,22 @@ Password: guest123
 
 ### 🔐 Authentication
 
-[![](assets/screenshots/login.png)](https://www.lockerpass.site/login)  [![](assets/screenshots/register.png)](https://www.lockerpass.site/register)
+<p align="center">
+  <a href="https://www.lockerpass.site/login" target="_blank">
+    <img src="assets/screenshots/login.png" width="450" />
+  </a>
+  <a href="https://www.lockerpass.site/register" target="_blank">
+    <img src="assets/screenshots/register.png" width="450" />
+  </a>
+</p>
 
 ### 📊 Dashboard
 Securely view and manage your stored credentials in a clean interface.
 
-![](assets/screenshots/dashboard.png)
+<img src="assets/screenshots/dashboard.png" width="800" />
 
 ### 🔑 Password Management
-![](assets/screenshots/save-password.png)
+<img src="assets/screenshots/save-password.png" width="800" />
 
 ## 🛠️ Tech Stack
 ### 🎨 Frontend
