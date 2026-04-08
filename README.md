@@ -13,6 +13,20 @@ Password: guest123
 - 🌐 Frontend: https://www.lockerpass.site/login
 - 📚 API Docs (Swagger): https://passwords-manager-api.onrender.com/docs#/default
 
+## 📸 Screenshots
+
+### 🔐 Authentication
+
+[![](assets/screenshots/login.png)](https://www.lockerpass.site/login)  [![](assets/screenshots/register.png)](https://www.lockerpass.site/register)
+
+### 📊 Dashboard
+Securely view and manage your stored credentials in a clean interface.
+
+![](assets/screenshots/dashboard.png)
+
+### 🔑 Password Management
+![](assets/screenshots/save-password.png)
+
 ## 🛠️ Tech Stack
 ### 🎨 Frontend
 Next.js (App Router)
