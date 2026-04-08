@@ -32,9 +32,9 @@ export const PasswordCards: FC<Props> = ({
 
   const handleDelete = (id: number) => {
     deletePasswordMutation.mutate(id, {
-      // onSuccess: () => {
-
-      // },
+      onSuccess: () => {
+        toast.success("Password deleted successfully");
+      },
       onError: (error) => {
         const message =
           error instanceof Error ? error.message : "Delete failed";
