@@ -36,19 +36,20 @@ Securely view and manage your stored credentials in a clean interface.
 
 ## 🛠️ Tech Stack
 ### 🎨 Frontend
-Next.js (App Router)
-React
-TypeScript
-Tailwind CSS
-Zustand (global state management)
-Framer Motion (animations)
-Lucide Icons
+Next.js,
+React,
+TypeScript,
+Tailwind CSS,
+Zustand (global state management),
+Framer Motion (animations),
+Lucide Icons,
+Sonner (toasts)
 
 ### ⚙️ Backend
-FastAPI (Python)
-JWT Authentication
-bcrypt (password hashing)
-python-jose (token handling)
+FastAPI (Python),
+JWT Authentication,
+bcrypt (password hashing),
+python-jose (token handling),
 psycopg2 (database connection)
 
 ### 🗄️ Database
