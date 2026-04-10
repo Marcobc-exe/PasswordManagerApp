@@ -19,7 +19,11 @@ from app.auth.services import authenticate_user
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/login")
+@router.post(
+  "/login",
+  summary="User login",
+  description="Authenticate user credentials and return access and refresh tokens."
+)
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
   user = authenticate_user(form_data.username, form_data.password)
 
@@ -38,7 +42,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
   }
 
 
-@router.post("/refresh")
+@router.post(
+  "/refresh",
+  summary="Refresh access token",
+  description="Generate a new access token using a valid refresh token."
+)
 def refresh_token(data: RefreshTokenRequest):
   email = verify_refresh_token(data.refresh_token)
 
@@ -64,7 +72,11 @@ def refresh_token(data: RefreshTokenRequest):
   }
   
 
-@router.post("/logout")
+@router.post(
+  "/logout",
+  summary="Logout user",
+  description="Revoke the refresh token and terminate the session."
+)
 def logout(data: LogoutRequest):
   if not data.refresh_token:
     raise HTTPException(status_code=400, detail="Refresh token is required")

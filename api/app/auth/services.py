@@ -2,7 +2,9 @@ from datetime import datetime, timezone
 from app.database import get_db_connection
 from app.encryption import verify_password
 
-
+"""
+  Validate user credentials and return user data if valid.
+"""
 def authenticate_user(email: str, password: str):
   conn = get_db_connection()
   cursor = conn.cursor()
@@ -31,7 +33,9 @@ def authenticate_user(email: str, password: str):
     cursor.close()
     conn.close()
 
-
+"""
+  Retrieve a user by email.
+"""
 def get_user_by_email(email: str):
   conn = get_db_connection()
   cursor = conn.cursor()
@@ -55,7 +59,9 @@ def get_user_by_email(email: str):
     cursor.close()
     conn.close()
 
-
+"""
+  Store a new refresh token in the database for a user.
+"""
 def save_refresh_token(user_id: int, token: str, expires_at):
   conn = get_db_connection()
   cursor = conn.cursor()
@@ -70,7 +76,9 @@ def save_refresh_token(user_id: int, token: str, expires_at):
     cursor.close()
     conn.close()
 
-
+"""
+  Retrieve a refresh token record from the database.
+"""
 def find_refresh_token(token: str):
   conn = get_db_connection()
   cursor = conn.cursor()
@@ -101,7 +109,10 @@ def find_refresh_token(token: str):
     cursor.close()
     conn.close()
 
-
+"""
+  Mark a refresh token as revoked.
+  Prevents the token from being used again (logout or rotation).
+"""
 def revoke_refresh_token(token: str):
   conn = get_db_connection()
   cursor = conn.cursor()
@@ -120,7 +131,16 @@ def revoke_refresh_token(token: str):
     cursor.close()
     conn.close()
 
+"""
+  Validate a refresh token against the database.
 
+  Checks:
+  - token exists
+  - token is not revoked
+  - token is not expired
+
+  Returns True if valid, False otherwise.
+"""
 def is_refresh_token_valid_in_db(token: str):
   saved_token = find_refresh_token(token)
 
