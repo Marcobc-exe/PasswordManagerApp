@@ -13,9 +13,7 @@ import { api } from "./config";
 import { getAccessToken } from "@/helpers/helpers";
 
 export async function getPasswords(): Promise<PasswordListDTO> {
-  const { data } = await api.get("/get-passwords", {
-    validateStatus: () => true,
-  });
+  const { data } = await api.get("/passwords");
 
   const success = PasswordListSchema.safeParse(data);
   if (success.success) return success.data;
@@ -41,7 +39,6 @@ export async function savePassword(
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    validateStatus: () => true,
     skipAuthRefresh: true
   });
 
@@ -64,7 +61,6 @@ export async function deletePassword(
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    validateStatus: () => true,
     skipAuthRefresh: true
   });
 

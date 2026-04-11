@@ -10,16 +10,9 @@ export async function refreshAccessToken(): Promise<string> {
 
   if (!refreshToken) throw new Error("No refresh token found");
 
-  const { data } = await api.post(
-    "auth/refresh",
-    {
-      refresh_token: refreshToken,
-    },
-    {
-      validateStatus: () => true,
-      skipAuthRefresh: true,
-    },
-  );
+  const { data } = await api.post("/auth/refresh", {
+    refresh_token: refreshToken,
+  });
 
   const success = RefreshTokenSuccessSchema.safeParse(data);
   if (success.success) {
