@@ -18,8 +18,6 @@ export const api = axios.create({
   timeout: 10000,
 });
 
-let refreshPromise: Promise<string> | null = null;
-
 function PromiseError(error: AxiosError) {
   return Promise.reject(error);
 }
@@ -55,13 +53,7 @@ api.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
-      if (!refreshPromise) {
-        refreshPromise = refreshAccessToken().finally(() => {
-          refreshPromise = null;
-        });
-      }
-
-      const newAccessToken = await refreshPromise;
+      const newAccessToken = await refreshAccessToken();
 
       originalRequest.headers = originalRequest.headers ?? {};
       originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

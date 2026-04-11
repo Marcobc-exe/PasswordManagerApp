@@ -9,11 +9,13 @@ import {
   PasswordListDTO,
   SavePasswordFormDTO,
 } from "./passwords.schemas";
+import { getAccessToken } from "@/helpers/helpers";
 
 export function usePasswords() {
   return useQuery({
     queryKey: ["passwords"],
     queryFn: getPasswords,
+    enabled: !!getAccessToken(),
   });
 }
 

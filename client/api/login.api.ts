@@ -15,7 +15,7 @@ export async function loginUser(
   const parsedValues = LoginFormSchema.parse(values);
 
   const { data } = await api.post(
-    "auth/login",
+    "/auth/login",
     new URLSearchParams({
       username: parsedValues.email,
       password: parsedValues.password,
