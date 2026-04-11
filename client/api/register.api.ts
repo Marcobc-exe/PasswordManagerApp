@@ -13,7 +13,7 @@ export async function registerUser(
   const parsedValues = RegisterFormSchema.parse(values);
 
   const { data } = await api.post(
-    "/register",
+    "/users/register",
     new URLSearchParams({
       email: parsedValues.email,
       password: parsedValues.password,
