@@ -35,7 +35,7 @@ export async function savePassword(
   formData.append("username", parsedValues.username);
   formData.append("password", parsedValues.password);
 
-  const { data } = await api.post("/save-password", formData, {
+  const { data } = await api.post("/passwords", formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -57,7 +57,7 @@ export async function deletePassword(
   const id = DeletePasswordSchema.parse(value);
   const token = getAccessToken();
 
-  const { data } = await api.delete(`/delete-password/${id}`, {
+  const { data } = await api.delete(`/passwords/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
