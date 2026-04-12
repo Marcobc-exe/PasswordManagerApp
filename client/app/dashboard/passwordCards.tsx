@@ -1,10 +1,4 @@
 import { PasswordsProps } from "../type";
-import {
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-  TooltipContent,
-} from "@/components/ui/tooltip";
 import { Eye, EyeOff, Copy, Trash2, Star, StarOff } from "lucide-react";
 import { FC } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
@@ -14,6 +8,7 @@ import {
 } from "@/features/passwords/passwords.hook";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
+import { ActionButton } from "@/components/ActionButton";
 
 type Props = {
   search: string;
@@ -102,113 +97,53 @@ export const PasswordCards: FC<Props> = ({
                   </p>
                 </div>
 
-                <TooltipProvider>
-                  <div className="flex gap-2">
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <button
-                          onClick={() => handleFavourite(p.id)}
-                          className={`
-                              p-2 rounded-lg transition cursor-pointer
-                              ${
-                                darkMode
-                                  ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                                  : "bg-[#ffd391] hover:bg-[#f9c16c]"
-                              }
-                            `}
-                          disabled={
-                            toggleFavoriteMutation.isPending ||
-                            deletePasswordMutation.isPending
-                          }
-                        >
-                          {p.favorite ? (
-                            <Star color="#fff220" fill="#fff220" size={18} />
-                          ) : (
-                            <StarOff size={18} />
-                          )}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Favourite</p>
-                      </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <button
-                          onClick={() => handleTogglePassword(p.id)}
-                          className={`
-                            p-2 rounded-lg transition cursor-pointer
-                            ${
-                              darkMode
-                                ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                                : "bg-[#ffd391] hover:bg-[#f9c16c]"
-                            }
-                          `}
-                          disabled={
-                            toggleFavoriteMutation.isPending ||
-                            deletePasswordMutation.isPending
-                          }
-                        >
-                          {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{isVisible ? "Hide" : "Show"}</p>
-                      </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <button
-                          onClick={() => handleCopyPasswords(p.password)}
-                          className={`
-                            p-2 rounded-lg transition cursor-pointer
-                            ${
-                              darkMode
-                                ? "bg-[#21414f] hover:bg-[#0d1b21]"
-                                : "bg-[#ffd391] hover:bg-[#f9c16c]"
-                            }
-                          `}
-                          disabled={
-                            toggleFavoriteMutation.isPending ||
-                            deletePasswordMutation.isPending
-                          }
-                        >
-                          <Copy size={18} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Copy</p>
-                      </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <button
-                          onClick={() => handleDelete(p.id)}
-                          className={`
-                            p-2 rounded-lg transition cursor-pointer
-                            ${
-                              darkMode
-                                ? "bg-[#21414f] hover:bg-red-400"
-                                : "bg-[#e49d33] hover:bg-red-400"
-                            }
-                          `}
-                          disabled={
-                            toggleFavoriteMutation.isPending ||
-                            deletePasswordMutation.isPending
-                          }
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Delete</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </div>
-                </TooltipProvider>
+                <ActionButton
+                  icon={
+                    p.favorite ? (
+                      <Star color="#fff220" fill="#fff220" size={18} />
+                    ) : (
+                      <StarOff size={18} />
+                    )
+                  }
+                  label="Favourite"
+                  onClick={() => handleFavourite(p.id)}
+                  disabled={
+                    toggleFavoriteMutation.isPending ||
+                    deletePasswordMutation.isPending
+                  }
+                  darkMode={darkMode}
+                />
+                <ActionButton
+                  icon={isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                  label={isVisible ? "Hide" : "Show"}
+                  onClick={() => handleTogglePassword(p.id)}
+                  disabled={
+                    toggleFavoriteMutation.isPending ||
+                    deletePasswordMutation.isPending
+                  }
+                  darkMode={darkMode}
+                />
+                <ActionButton
+                  icon={<Copy size={18} />}
+                  label="Copy"
+                  onClick={() => handleCopyPasswords(p.password)}
+                  disabled={
+                    toggleFavoriteMutation.isPending ||
+                    deletePasswordMutation.isPending
+                  }
+                  darkMode={darkMode}
+                />
+                <ActionButton
+                  icon={<Trash2 size={18} />}
+                  label="Delete"
+                  onClick={() => handleDelete(p.id)}
+                  disabled={
+                    toggleFavoriteMutation.isPending ||
+                    deletePasswordMutation.isPending
+                  }
+                  darkMode={darkMode}
+                  hoverColor="hover:bg-red-400"
+                />
               </motion.div>
             );
           })}
