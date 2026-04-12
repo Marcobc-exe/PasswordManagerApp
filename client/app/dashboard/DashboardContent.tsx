@@ -14,7 +14,7 @@ import { SearchBar } from "./SearchBar";
 import { PasswordCards } from "./passwordCards";
 import { useMediaQuery } from "@mui/material";
 
-export default function DashboardContent() {
+export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [website, setWebsite] = useState("");
