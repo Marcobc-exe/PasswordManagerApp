@@ -70,7 +70,7 @@ export default function DashboardContent() {
           handleSetWebsite={handleSetWebsite}
           handleSetUsername={handleSetUsername}
           handleSetPassword={handleSetPassword}
-          handleSavePassword={handleSavePassword}
+          handleInputsValues={handleInputsValues}
           handleOpenModal={handleOpenModal}
         />
       </>
