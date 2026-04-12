@@ -1,10 +1,6 @@
-import {
-  usePasswords,
-  useSavePassword,
-} from "@/features/passwords/passwords.hook";
+import { usePasswords } from "@/features/passwords/passwords.hook";
 import { clearTokens } from "@/helpers/helpers";
-import { SyntheticEvent, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { Loading } from "./Loading";
 import { ErrorMsg } from "./ErrorMessage";
 import { NoPasswordsYet } from "./noPasswords";
@@ -27,7 +23,6 @@ export default function DashboardContent() {
   const [search, setSearch] = useState("");
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data: passwords = [], isLoading, error } = usePasswords();
-  const savePasswordMutation = useSavePassword();
 
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
@@ -45,29 +40,11 @@ export default function DashboardContent() {
     navigator.clipboard.writeText(passwords);
   };
 
-  const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    savePasswordMutation.mutate(
-      {
-        website,
-        username,
-        password,
-      },
-      {
-        onSuccess: () => {
-          setOpenModal(false);
-          setWebsite("");
-          setUsername("");
-          setPassword("");
-        },
-        onError: (error) => {
-          const message =
-            error instanceof Error ? error.message : "Failed to save password";
-          const messageParsed = JSON.parse(message);
-          toast.warning(messageParsed[0]?.message || message);
-        },
-      },
-    );
+  const handleInputsValues = () => {
+    setOpenModal(false);
+    setWebsite("");
+    setUsername("");
+    setPassword("");
   };
 
   const handleLogout = () => {
@@ -138,8 +115,8 @@ export default function DashboardContent() {
         handleSetWebsite={handleSetWebsite}
         handleSetUsername={handleSetUsername}
         handleSetPassword={handleSetPassword}
-        handleSavePassword={handleSavePassword}
         handleOpenModal={handleOpenModal}
+        handleInputsValues={handleInputsValues}
       />
     </main>
   );
