@@ -13,6 +13,7 @@ import { LogoutBtn } from "./LogoutBtn";
 import { SearchBar } from "./SearchBar";
 import { PasswordCards } from "./passwordCards";
 import { useMediaQuery } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -23,6 +24,7 @@ export const DashboardContent = () => {
   const [search, setSearch] = useState("");
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data: passwords = [], isLoading, error } = usePasswords();
+  const router = useRouter();
 
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
@@ -49,7 +51,7 @@ export const DashboardContent = () => {
 
   const handleLogout = () => {
     clearTokens();
-    window.location.href = "/login";
+    router.push("/login");
   };
 
   if (isLoading) return <Loading />;
