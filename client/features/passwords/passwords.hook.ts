@@ -2,6 +2,7 @@ import {
   deletePassword,
   getPasswords,
   savePassword,
+  toggleFavoritePassword,
 } from "@/api/passwords.api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -47,6 +48,17 @@ export function useDeletePassword() {
       );
 
       return { previousPasswords };
+    },
+  });
+}
+
+export function useToggleFavoritePassword() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => toggleFavoritePassword(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["passwords"] });
     },
   });
 }

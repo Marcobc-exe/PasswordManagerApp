@@ -5,10 +5,13 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { Eye, EyeOff, Copy, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Copy, Trash2, Star, StarOff } from "lucide-react";
 import { FC } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
-import { useDeletePassword } from "@/features/passwords/passwords.hook";
+import {
+  useDeletePassword,
+  useToggleFavoritePassword,
+} from "@/features/passwords/passwords.hook";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -29,6 +32,7 @@ export const PasswordCards: FC<Props> = ({
 }) => {
   const darkMode = useThemeStore((state) => state.darkMode);
   const deletePasswordMutation = useDeletePassword();
+  const toggleFavoriteMutation = useToggleFavoritePassword();
 
   const handleDelete = (id: number) => {
     deletePasswordMutation.mutate(id, {
@@ -40,6 +44,21 @@ export const PasswordCards: FC<Props> = ({
           error instanceof Error ? error.message : "Delete failed";
         const messageParsed = JSON.parse(message);
         toast.warning(messageParsed[0]?.message || message);
+      },
+    });
+  };
+
+  const handleFavourite = (id: number) => {
+    toggleFavoriteMutation.mutate(id, {
+      onSuccess: (data) => {
+        toast.success(
+          data.favorite ? "Added to favourites" : "Removed from favourites",
+        );
+      },
+      onError: (error) => {
+        const message =
+          error instanceof Error ? error.message : "Favorite update failed";
+        toast.warning(message);
       },
     });
   };
@@ -88,6 +107,35 @@ export const PasswordCards: FC<Props> = ({
                     <Tooltip>
                       <TooltipTrigger>
                         <button
+                          onClick={() => handleFavourite(p.id)}
+                          className={`
+                              p-2 rounded-lg transition cursor-pointer
+                              ${
+                                darkMode
+                                  ? "bg-[#21414f] hover:bg-[#0d1b21]"
+                                  : "bg-[#ffd391] hover:bg-[#f9c16c]"
+                              }
+                            `}
+                          disabled={
+                            toggleFavoriteMutation.isPending ||
+                            deletePasswordMutation.isPending
+                          }
+                        >
+                          {p.favorite ? (
+                            <Star color="#fff220" fill="#fff220" size={18} />
+                          ) : (
+                            <StarOff size={18} />
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Favourite</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <button
                           onClick={() => handleTogglePassword(p.id)}
                           className={`
                             p-2 rounded-lg transition cursor-pointer
@@ -97,7 +145,10 @@ export const PasswordCards: FC<Props> = ({
                                 : "bg-[#ffd391] hover:bg-[#f9c16c]"
                             }
                           `}
-                          disabled={deletePasswordMutation.isPending}
+                          disabled={
+                            toggleFavoriteMutation.isPending ||
+                            deletePasswordMutation.isPending
+                          }
                         >
                           {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -119,7 +170,10 @@ export const PasswordCards: FC<Props> = ({
                                 : "bg-[#ffd391] hover:bg-[#f9c16c]"
                             }
                           `}
-                          disabled={deletePasswordMutation.isPending}
+                          disabled={
+                            toggleFavoriteMutation.isPending ||
+                            deletePasswordMutation.isPending
+                          }
                         >
                           <Copy size={18} />
                         </button>
@@ -141,7 +195,10 @@ export const PasswordCards: FC<Props> = ({
                                 : "bg-[#e49d33] hover:bg-red-400"
                             }
                           `}
-                          disabled={deletePasswordMutation.isPending}
+                          disabled={
+                            toggleFavoriteMutation.isPending ||
+                            deletePasswordMutation.isPending
+                          }
                         >
                           <Trash2 size={18} />
                         </button>

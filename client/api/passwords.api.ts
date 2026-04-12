@@ -8,6 +8,7 @@ import {
   SavePasswordFormSchema,
   PasswordSuccessDTO,
   DeletePasswordSchema,
+  ToggleFavoriteSchema,
 } from "@/features/passwords/passwords.schemas";
 import { api } from "./config";
 import { getAccessToken } from "@/helpers/helpers";
@@ -71,4 +72,13 @@ export async function deletePassword(
   if (failed.success) throw new Error(failed.data.detail);
 
   throw new Error("Unexpected delete-password response");
+}
+
+export async function toggleFavoritePassword(id: number) {
+  const { data } = await api.patch(`passwords/${id}/favorite`);
+
+  const parsed = ToggleFavoriteSchema.safeParse(data);
+
+  if (!parsed.success) throw new Error("Invalid favorite response");
+  return parsed.data;
 }

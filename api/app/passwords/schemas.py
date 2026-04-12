@@ -5,6 +5,11 @@ class PasswordItemResponse(BaseModel):
   website: str
   username: str
   password: str
+  favorite: bool = False
 
 class PasswordMessageResponse(BaseModel):
   message: str
+  
+class ToggleFavoriteResponse(BaseModel):
+  message: str
+  favorite: bool
