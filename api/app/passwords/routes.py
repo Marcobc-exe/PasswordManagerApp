@@ -1,14 +1,16 @@
 from fastapi import APIRouter, Depends, Form, HTTPException, status
 
-from app.passwords.schemas import PasswordItemResponse, PasswordMessageResponse
+from app.passwords.schemas import PasswordItemResponse, PasswordMessageResponse, ToggleFavoriteResponse
 from app.auth import get_current_user
 from app.passwords.services import (
   create_password_entry,
   delete_password_entry,
   get_password_entries,
+  toggle_favourite_entry,
 )
 
 router = APIRouter(prefix="/passwords", tags=["Passwords"])
+
 
 """
   Create a new password entry for the authenticated user.
@@ -36,6 +38,7 @@ def save_password(
       detail="Unexpected server error",
     ) from exc
 
+
 """
   Retrieve all stored passwords for the authenticated user.
 """
@@ -56,6 +59,7 @@ def get_passwords(user_email: str = Depends(get_current_user)):
       detail="Unexpected server error",
     ) from exc
 
+
 """
   Delete a specific password entry by ID for the authenticated user.
 """
@@ -68,6 +72,27 @@ def get_passwords(user_email: str = Depends(get_current_user)):
 def delete_password(password_id: int, user_email: str = Depends(get_current_user)):
   try:
     return delete_password_entry(user_email, password_id)
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error",
+    ) from exc
+
+
+@router.patch(
+  "/{password_id}/favorite",
+  summary="Toggle favorite password",
+  description="Toggle the favorite status of a password entry for the authenticated user.",
+  response_model=ToggleFavoriteResponse
+)
+def toggle_favourite(
+  password_id: int,
+  user_email: str = Depends(get_current_user)
+):
+  try:
+    return toggle_favourite_entry(user_email, password_id)
   except HTTPException as exc:
     raise exc
   except Exception as exc:

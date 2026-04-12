@@ -5,6 +5,7 @@ export const PasswordItemSchema = z.object({
   website: z.string(),
   username: z.string(),
   password: z.string(),
+  favorite: z.boolean(),
 });
 
 export const PasswordListSchema = z.array(PasswordItemSchema);
@@ -21,6 +22,11 @@ export const SavePasswordFormSchema = z.object({
 
 export const PasswordSuccessSchema = z.object({
   message: z.string(),
+});
+
+export const ToggleFavoriteSchema = z.object({
+  message: z.string(),
+  favorite: z.boolean(),
 });
 
 export const DeletePasswordSchema = z.number();
