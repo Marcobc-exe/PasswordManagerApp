@@ -4,6 +4,7 @@ import { FC, SyntheticEvent } from "react";
 import { useThemeStore } from "../store/themeStore";
 import { useSavePassword } from "@/features/passwords/passwords.hook";
 import { Spinner } from "@/components/Spinner";
+import { toast } from "sonner";
 
 type Props = {
   openModal: boolean;
@@ -13,8 +14,8 @@ type Props = {
   handleSetWebsite: (value: string) => void;
   handleSetUsername: (value: string) => void;
   handleSetPassword: (value: string) => void;
-  handleSavePassword: (e: SyntheticEvent<HTMLFormElement>) => void;
   handleOpenModal: (value: boolean) => void;
+  handleInputsValues: () => void;
 };
 
 export const AddPassModal: FC<Props> = ({
@@ -25,14 +26,37 @@ export const AddPassModal: FC<Props> = ({
   handleSetWebsite,
   handleSetUsername,
   handleSetPassword,
-  handleSavePassword,
   handleOpenModal,
+  handleInputsValues
 }) => {
   const savePasswordMutation = useSavePassword();
   const darkMode = useThemeStore((state) => state.darkMode);
   const inputTheme = darkMode
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
+
+  const handleSavePassword = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    savePasswordMutation.mutate(
+      {
+        website,
+        username,
+        password,
+      },
+      {
+        onSuccess: (data) => {
+          toast.success(data.message);
+          handleInputsValues();
+        },
+        onError: (error) => {
+          const message =
+            error instanceof Error ? error.message : "Failed to save password";
+          const messageParsed = JSON.parse(message);
+          toast.warning(messageParsed[0]?.message || message);
+        },
+      },
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -58,7 +82,7 @@ export const AddPassModal: FC<Props> = ({
                 className="cursor-pointer"
                 onClick={() => handleOpenModal(false)}
               >
-                <X size={20} color="white"/>
+                <X size={20} color="white" />
               </button>
             </div>
 
