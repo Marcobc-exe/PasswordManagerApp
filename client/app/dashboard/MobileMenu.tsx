@@ -1,16 +1,22 @@
 import { FC, useState } from "react";
 import { useThemeStore } from "../store/themeStore";
 import { LogOut, Menu, Moon, Plus, Sun, X } from "lucide-react";
+import { useLogout } from "@/hooks/useLogout";
 
 type Props = {
-  handleLogout: () => void;
   handleOpenModal: (value: boolean) => void;
 };
 
-export const MobileMenu: FC<Props> = ({ handleLogout, handleOpenModal }) => {
+export const MobileMenu: FC<Props> = ({ handleOpenModal }) => {
   const [open, setOpen] = useState(false);
   const toggleDarkMode = useThemeStore((state) => state.toggleDarkMode);
   const darkMode = useThemeStore((state) => state.darkMode);
+  const { handleLogout, isLoading } = useLogout();
+
+  const onLogout = async () => {
+    await handleLogout();
+    setOpen(false);
+  };
 
   return (
     <>
@@ -52,11 +58,12 @@ export const MobileMenu: FC<Props> = ({ handleLogout, handleOpenModal }) => {
               </button>
 
               <button
-                onClick={handleLogout}
+                onClick={onLogout}
+                disabled={isLoading}
                 className="flex items-center gap-3 text-red-400 cursor-pointer"
               >
                 <LogOut size={20} />
-                Logout
+                {"Logout"}
               </button>
             </div>
           </div>

@@ -1,5 +1,4 @@
 import { usePasswords } from "@/features/passwords/passwords.hook";
-import { clearTokens } from "@/helpers/helpers";
 import { useState } from "react";
 import { Loading } from "./Loading";
 import { ErrorMsg } from "./ErrorMessage";
@@ -13,7 +12,6 @@ import { LogoutBtn } from "./LogoutBtn";
 import { SearchBar } from "./SearchBar";
 import { PasswordCards } from "./passwordCards";
 import { useMediaQuery } from "@mui/material";
-import { useRouter } from "next/navigation";
 
 export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -24,7 +22,6 @@ export const DashboardContent = () => {
   const [search, setSearch] = useState("");
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data: passwords = [], isLoading, error } = usePasswords();
-  const router = useRouter();
 
   const handleSetWebsite = (value: string) => setWebsite(value);
   const handleSetUsername = (value: string) => setUsername(value);
@@ -47,11 +44,6 @@ export const DashboardContent = () => {
     setWebsite("");
     setUsername("");
     setPassword("");
-  };
-
-  const handleLogout = () => {
-    clearTokens();
-    router.push("/login");
   };
 
   if (isLoading) return <Loading />;
@@ -84,10 +76,7 @@ export const DashboardContent = () => {
       <div className="flex justify-between items-center mb-8">
         <TitleDashboard />
         {isMobile ? (
-          <MobileMenu
-            handleLogout={handleLogout}
-            handleOpenModal={handleOpenModal}
-          />
+          <MobileMenu handleOpenModal={handleOpenModal} />
         ) : (
           <div className="flex justify-between items-end gap-3">
             <ThemeBtn />
@@ -95,7 +84,7 @@ export const DashboardContent = () => {
               isMobile={isMobile}
               handleOpenModal={handleOpenModal}
             />
-            <LogoutBtn isMobile={isMobile} handleLogout={handleLogout} />
+            <LogoutBtn isMobile={isMobile} />
           </div>
         )}
       </div>
@@ -122,4 +111,4 @@ export const DashboardContent = () => {
       />
     </main>
   );
-}
+};
