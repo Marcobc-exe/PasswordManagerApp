@@ -1,4 +1,6 @@
-import { FC } from "react";
+import { options } from "@/consts/consts";
+import { ChevronDown } from "lucide-react";
+import { FC, useState } from "react";
 
 type Props = {
   value: string;
@@ -6,35 +8,55 @@ type Props = {
 };
 
 export const FilterPasswords: FC<Props> = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((option) => option.value === value);
   const optionStyles = "bg-[#0f2027] text-white cursor-pointer";
 
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={`
-        px-4 py-2 mb-3 rounded-xl border
-      bg-[#0f2027] text-white
-      border-[#21414f]
-        focus:outline-none
-        cursor-pointer
-      `}
-    >
-      <option className={optionStyles} value="date_desc">
-        Newest
-      </option>
-      <option className={optionStyles} value="date_asc">
-        Oldest
-      </option>
-      <option className={optionStyles} value="favorites">
-        Favorites
-      </option>
-      <option className={optionStyles} value="az">
-        A-Z
-      </option>
-      <option className={optionStyles} value="za">
-        Z-A
-      </option>
-    </select>
+    <div className="relative w-48">
+      {/* Trigger */}
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="
+          w-full px-4 py-2 rounded-xl
+          bg-[#0f2027] text-white
+          border border-[#21414f]
+          flex justify-between items-center
+          cursor-pointer mb-3
+        "
+      >
+        {selected?.label}
+        <ChevronDown size={16} />
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div
+          className="
+            absolute mt-2 w-full rounded-xl
+            bg-[#0f2027] 
+            border border-[#21414f]
+            shadow-lg z-50
+            overflow-hidden
+          "
+        >
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => {
+                onChange(opt.value);
+                setOpen(false);
+              }}
+              className={`
+                w-full text-left px-4 py-2 transition cursor-pointer
+                ${value === opt.value ? "bg-[#21414f]" : "hover:bg-[#0d1b21]"}
+              `}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
