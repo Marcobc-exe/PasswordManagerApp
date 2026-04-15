@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { ActionButton } from "@/components/ActionButton";
 
 type Props = {
-  search: string;
+  // search: string;
   passwords: PasswordsProps[];
   visiblePasswords: number[];
   handleTogglePassword: (value: number) => void;
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export const PasswordCards: FC<Props> = ({
-  search,
   passwords,
   visiblePasswords,
   handleTogglePassword,
@@ -61,22 +60,18 @@ export const PasswordCards: FC<Props> = ({
   return (
     <AnimatePresence>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-4xl mx-auto place-items-center">
-        {passwords
-          .filter((p) =>
-            p.website.toLocaleLowerCase().includes(search.toLowerCase()),
-          )
-          .map((p: PasswordsProps) => {
-            const isVisible = visiblePasswords.includes(p.id);
+        {passwords.map((p: PasswordsProps) => {
+          const isVisible = visiblePasswords.includes(p.id);
 
-            return (
-              <motion.div
-                key={p.website}
-                layout
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.96, y: -8 }}
-                transition={{ duration: 0.4 }}
-                className={`
+          return (
+            <motion.div
+              key={p.website}
+              layout
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: -8 }}
+              transition={{ duration: 0.4 }}
+              className={`
                   w-full max-w-md  p-5 rounded-2xl flex justify-between items-center transition
                   ${
                     darkMode
@@ -84,69 +79,69 @@ export const PasswordCards: FC<Props> = ({
                       : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
                   }
                 `}
-              >
-                <div className="flex flex-col gap-1 w-2/3">
-                  <p className="text-lg font-semibold">{p.website}</p>
-                  <p
-                    className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
-                  >
-                    {p.username}
-                  </p>
-                  <p className="font-mono mt-2 text-lg truncate">
-                    {isVisible ? p.password : "*********"}
-                  </p>
-                </div>
+            >
+              <div className="flex flex-col gap-1 w-2/3">
+                <p className="text-lg font-semibold">{p.website}</p>
+                <p
+                  className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
+                >
+                  {p.username}
+                </p>
+                <p className="font-mono mt-2 text-lg truncate">
+                  {isVisible ? p.password : "*********"}
+                </p>
+              </div>
 
-                <ActionButton
-                  icon={
-                    p.favorite ? (
-                      <Star color="#fff220" fill="#fff220" size={18} />
-                    ) : (
-                      <StarOff size={18} />
-                    )
-                  }
-                  label="Favourite"
-                  onClick={() => handleFavourite(p.id)}
-                  disabled={
-                    toggleFavoriteMutation.isPending ||
-                    deletePasswordMutation.isPending
-                  }
-                  darkMode={darkMode}
-                />
-                <ActionButton
-                  icon={isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
-                  label={isVisible ? "Hide" : "Show"}
-                  onClick={() => handleTogglePassword(p.id)}
-                  disabled={
-                    toggleFavoriteMutation.isPending ||
-                    deletePasswordMutation.isPending
-                  }
-                  darkMode={darkMode}
-                />
-                <ActionButton
-                  icon={<Copy size={18} />}
-                  label="Copy"
-                  onClick={() => handleCopyPasswords(p.password)}
-                  disabled={
-                    toggleFavoriteMutation.isPending ||
-                    deletePasswordMutation.isPending
-                  }
-                  darkMode={darkMode}
-                />
-                <ActionButton
-                  icon={<Trash2 size={18} />}
-                  label="Delete"
-                  onClick={() => handleDelete(p.id)}
-                  disabled={
-                    toggleFavoriteMutation.isPending ||
-                    deletePasswordMutation.isPending
-                  }
-                  darkMode={darkMode}
-                  hoverColor="hover:bg-red-400"
-                />
-              </motion.div>
-            );
-          })}
+              <ActionButton
+                icon={
+                  p.favorite ? (
+                    <Star color="#fff220" fill="#fff220" size={18} />
+                  ) : (
+                    <StarOff size={18} />
+                  )
+                }
+                label="Favourite"
+                onClick={() => handleFavourite(p.id)}
+                disabled={
+                  toggleFavoriteMutation.isPending ||
+                  deletePasswordMutation.isPending
+                }
+                darkMode={darkMode}
+              />
+              <ActionButton
+                icon={isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+                label={isVisible ? "Hide" : "Show"}
+                onClick={() => handleTogglePassword(p.id)}
+                disabled={
+                  toggleFavoriteMutation.isPending ||
+                  deletePasswordMutation.isPending
+                }
+                darkMode={darkMode}
+              />
+              <ActionButton
+                icon={<Copy size={18} />}
+                label="Copy"
+                onClick={() => handleCopyPasswords(p.password)}
+                disabled={
+                  toggleFavoriteMutation.isPending ||
+                  deletePasswordMutation.isPending
+                }
+                darkMode={darkMode}
+              />
+              <ActionButton
+                icon={<Trash2 size={18} />}
+                label="Delete"
+                onClick={() => handleDelete(p.id)}
+                disabled={
+                  toggleFavoriteMutation.isPending ||
+                  deletePasswordMutation.isPending
+                }
+                darkMode={darkMode}
+                hoverColor="hover:bg-red-400"
+              />
+            </motion.div>
+          );
+        })}
       </div>
     </AnimatePresence>
   );

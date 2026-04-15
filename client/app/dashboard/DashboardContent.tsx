@@ -12,6 +12,7 @@ import { LogoutBtn } from "./LogoutBtn";
 import { SearchBar } from "./SearchBar";
 import { PasswordCards } from "./passwordCards";
 import { useMediaQuery } from "@mui/material";
+import { FilterPasswords } from "./FilterPasswords";
 
 export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -20,6 +21,7 @@ export const DashboardContent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("date_desc");
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data: passwords = [], isLoading, error } = usePasswords();
 
@@ -28,6 +30,7 @@ export const DashboardContent = () => {
   const handleSetPassword = (value: string) => setPassword(value);
   const handleOpenModal = (value: boolean) => setOpenModal(value);
   const handleSearch = (value: string) => setSearch(value);
+  const handleFilter = (value: string) => setFilter(value);
 
   const togglePassword = (id: number) => {
     setVisiblePasswords((prev) =>
@@ -45,6 +48,37 @@ export const DashboardContent = () => {
     setUsername("");
     setPassword("");
   };
+
+  const filteredPasswords = [...passwords]
+    .filter((password) =>
+      password.website.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+    )
+    .sort((a, b) => {
+      switch (filter) {
+        case "favorites":
+          if (a.favorite !== b.favorite) {
+            return Number(b.favorite) - Number(a.favorite);
+          }
+          return a.website.localeCompare(b.website);
+
+        case "az":
+          return a.website.localeCompare(b.website);
+
+        case "za":
+          return b.website.localeCompare(a.website);
+
+        case "date_asc":
+          return (
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          );
+
+        case "date_desc":
+        default:
+          return (
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+      }
+    });
 
   if (isLoading) return <Loading />;
   if (error) {
@@ -90,9 +124,9 @@ export const DashboardContent = () => {
       </div>
       <div className="max-w-4xl mx-auto">
         <SearchBar search={search} handleSearch={handleSearch} />
+        <FilterPasswords value={filter} onChange={handleFilter} />
         <PasswordCards
-          search={search}
-          passwords={passwords}
+          passwords={filteredPasswords}
           visiblePasswords={visiblePasswords}
           handleTogglePassword={togglePassword}
           handleCopyPasswords={copyPasswords}

@@ -69,7 +69,7 @@ def get_password_entries(user_email: str):
     user_id = get_user_id_by_email(cursor, user_email)
 
     cursor.execute(
-      "SELECT id, website, username, password, favorite FROM passwords WHERE user_id = %s",
+      "SELECT id, website, username, password, favorite, created_at FROM passwords WHERE user_id = %s",
       (user_id,),
     )
     
@@ -77,7 +77,7 @@ def get_password_entries(user_email: str):
 
     data = []
     
-    for password_id, website, username, encrypted_password, favorite in results:
+    for password_id, website, username, encrypted_password, favorite, created_at in results:
       data.append(
         {
           "id": password_id,
@@ -85,6 +85,7 @@ def get_password_entries(user_email: str):
           "username": username,
           "password": decrypt_website_password(encrypted_password),
           "favorite": favorite,
+          "created_at": created_at,
         }
       )
 
