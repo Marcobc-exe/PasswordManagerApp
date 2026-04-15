@@ -24,7 +24,7 @@ def get_user_id_by_email(cursor, user_email: str):
 """
   Create and store an encrypted password entry for the user.
 """
-def create_password_entry(user_email: str, website: str, username: str, password: str, favorite: bool):
+def create_password_entry(user_email: str, website: str, username: str, password: str):
   website = website.strip()
   username = username.strip()
   password = password.strip()
@@ -44,10 +44,10 @@ def create_password_entry(user_email: str, website: str, username: str, password
 
     cursor.execute(
       """
-      INSERT INTO passwords (user_id, website, username, password, favorite)
-      VALUES (%s, %s, %s, %s, %s)
+      INSERT INTO passwords (user_id, website, username, password)
+      VALUES (%s, %s, %s, %s)
       """,
-      (user_id, website, username, encrypted_password, favorite),
+      (user_id, website, username, encrypted_password),
     )
     conn.commit()
 
