@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 class PasswordItemResponse(BaseModel):
   id: int
@@ -6,6 +7,7 @@ class PasswordItemResponse(BaseModel):
   username: str
   password: str
   favorite: bool = False
+  created_at: datetime
 
 class PasswordMessageResponse(BaseModel):
   message: str

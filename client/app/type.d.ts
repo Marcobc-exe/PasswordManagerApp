@@ -4,4 +4,5 @@ export type PasswordsProps = {
   username: string;
   password: string;
   favorite: boolean;
+  created_at: string;
 };

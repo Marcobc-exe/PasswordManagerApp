@@ -6,6 +6,7 @@ export const PasswordItemSchema = z.object({
   username: z.string(),
   password: z.string(),
   favorite: z.boolean(),
+  created_at: z.string(),
 });
 
 export const PasswordListSchema = z.array(PasswordItemSchema);
