@@ -10,7 +10,6 @@ type Props = {
 export const FilterPasswords: FC<Props> = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const selected = options.find((option) => option.value === value);
-  const optionStyles = "bg-[#0f2027] text-white cursor-pointer";
 
   return (
     <div className="relative w-48">

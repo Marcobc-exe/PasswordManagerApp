@@ -1,8 +1,7 @@
 import { usePasswords } from "@/features/passwords/passwords.hook";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Loading } from "./Loading";
 import { ErrorMsg } from "./ErrorMessage";
-import { NoPasswordsYet } from "./noPasswords";
 import { AddPassModal } from "./addPassModal";
 import { TitleDashboard } from "./TitleDashboard";
 import { MobileMenu } from "./MobileMenu";
@@ -13,6 +12,9 @@ import { SearchBar } from "./SearchBar";
 import { PasswordCards } from "./passwordCards";
 import { useMediaQuery } from "@mui/material";
 import { FilterPasswords } from "./FilterPasswords";
+import { QueryStateHandler } from "./QueryStateHandler";
+import { EmptyFallback } from "./EmptyFallback";
+import { sorters } from "@/helpers/helpers";
 
 export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
@@ -49,47 +51,61 @@ export const DashboardContent = () => {
     setPassword("");
   };
 
-  const filteredPasswords = [...passwords]
-    .filter((password) =>
-      password.website.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
-    )
-    .sort((a, b) => {
-      switch (filter) {
-        case "favorites":
-          if (a.favorite !== b.favorite) {
-            return Number(b.favorite) - Number(a.favorite);
-          }
-          return a.website.localeCompare(b.website);
+  const filteredPasswords = useMemo(() => {
+    const sorter = sorters[filter] || sorters.date_desc;
 
-        case "az":
-          return a.website.localeCompare(b.website);
+    return [...passwords]
+      .filter((p) => p.website.toLowerCase().includes(search.toLowerCase()))
+      .sort(sorter);
+  }, [passwords, search, filter]);
 
-        case "za":
-          return b.website.localeCompare(a.website);
-
-        case "date_asc":
-          return (
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          );
-
-        case "date_desc":
-        default:
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
+  return (
+    <QueryStateHandler
+      isLoading={isLoading}
+      error={error}
+      data={filteredPasswords}
+      loadingFallback={<Loading />}
+      errorFallback={(message) => <ErrorMsg error={message} />}
+      emptyFallback={
+        <EmptyFallback
+          website={website}
+          username={username}
+          password={password}
+          openModal={openModal}
+          handleOpenModal={handleOpenModal}
+          handleSetWebsite={handleSetWebsite}
+          handleSetUsername={handleSetUsername}
+          handleSetPassword={handleSetPassword}
+          handleInputsValues={handleInputsValues}
+        />
       }
-    });
-
-  if (isLoading) return <Loading />;
-  if (error) {
-    const message =
-      error instanceof Error ? error.message : "Something went wrong";
-    return <ErrorMsg error={message} />;
-  }
-  if (passwords.length == 0) {
-    return (
-      <>
-        <NoPasswordsYet handleOpenModal={handleOpenModal} />
+    >
+      <main className={`relative min-h-screen p-10`}>
+        <div className="flex justify-between items-center mb-8">
+          <TitleDashboard />
+          {isMobile ? (
+            <MobileMenu handleOpenModal={handleOpenModal} />
+          ) : (
+            <div className="flex justify-between items-end gap-3">
+              <ThemeBtn />
+              <AddPasswordBtn
+                isMobile={isMobile}
+                handleOpenModal={handleOpenModal}
+              />
+              <LogoutBtn isMobile={isMobile} />
+            </div>
+          )}
+        </div>
+        <div className="max-w-4xl mx-auto">
+          <SearchBar search={search} handleSearch={handleSearch} />
+          <FilterPasswords value={filter} onChange={handleFilter} />
+          <PasswordCards
+            passwords={filteredPasswords}
+            visiblePasswords={visiblePasswords}
+            handleTogglePassword={togglePassword}
+            handleCopyPasswords={copyPasswords}
+          />
+        </div>
         <AddPassModal
           openModal={openModal}
           website={website}
@@ -98,51 +114,10 @@ export const DashboardContent = () => {
           handleSetWebsite={handleSetWebsite}
           handleSetUsername={handleSetUsername}
           handleSetPassword={handleSetPassword}
-          handleInputsValues={handleInputsValues}
           handleOpenModal={handleOpenModal}
+          handleInputsValues={handleInputsValues}
         />
-      </>
-    );
-  }
-
-  return (
-    <main className={`relative min-h-screen p-10`}>
-      <div className="flex justify-between items-center mb-8">
-        <TitleDashboard />
-        {isMobile ? (
-          <MobileMenu handleOpenModal={handleOpenModal} />
-        ) : (
-          <div className="flex justify-between items-end gap-3">
-            <ThemeBtn />
-            <AddPasswordBtn
-              isMobile={isMobile}
-              handleOpenModal={handleOpenModal}
-            />
-            <LogoutBtn isMobile={isMobile} />
-          </div>
-        )}
-      </div>
-      <div className="max-w-4xl mx-auto">
-        <SearchBar search={search} handleSearch={handleSearch} />
-        <FilterPasswords value={filter} onChange={handleFilter} />
-        <PasswordCards
-          passwords={filteredPasswords}
-          visiblePasswords={visiblePasswords}
-          handleTogglePassword={togglePassword}
-          handleCopyPasswords={copyPasswords}
-        />
-      </div>
-      <AddPassModal
-        openModal={openModal}
-        website={website}
-        username={username}
-        password={password}
-        handleSetWebsite={handleSetWebsite}
-        handleSetUsername={handleSetUsername}
-        handleSetPassword={handleSetPassword}
-        handleOpenModal={handleOpenModal}
-        handleInputsValues={handleInputsValues}
-      />
-    </main>
+      </main>
+    </QueryStateHandler>
   );
 };
