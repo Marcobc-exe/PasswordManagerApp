@@ -5,6 +5,7 @@ import { useThemeStore } from "@/app/store/themeStore";
 import { useLogout } from "@/hooks/useLogout";
 import {
   CircleUserRound,
+  Lock,
   LogOut,
   Moon,
   Settings,
@@ -58,14 +59,20 @@ export const IconProfileMenu = () => {
           </button>
 
           <button className={stylesIcons}>
-            <Settings size={18} />
-            Settings
+            <Lock size={18} />
+            Passwords
           </button>
 
           <button onClick={toggleDarkMode} className={stylesIcons}>
             {darkMode ? <Sun size={18} /> : <Moon size={18} />}
             Appearance
           </button>
+
+          <button className={stylesIcons}>
+            <Settings size={18} />
+            Settings
+          </button>
+          
           <button
             onClick={handleLogout}
             disabled={isLoading}
