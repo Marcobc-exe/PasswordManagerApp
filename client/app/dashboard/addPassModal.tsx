@@ -5,30 +5,29 @@ import { useThemeStore } from "../store/themeStore";
 import { useSavePassword } from "@/features/passwords/passwords.hook";
 import { Spinner } from "@/components/Spinner";
 import { toast } from "sonner";
+import { useOpenModalStore } from "../store/openPasswordModalStore";
 
 type Props = {
-  openModal: boolean;
   website: string;
   username: string;
   password: string;
   handleSetWebsite: (value: string) => void;
   handleSetUsername: (value: string) => void;
   handleSetPassword: (value: string) => void;
-  handleOpenModal: (value: boolean) => void;
   handleInputsValues: () => void;
 };
 
 export const AddPassModal: FC<Props> = ({
-  openModal,
   website,
   username,
   password,
   handleSetWebsite,
   handleSetUsername,
   handleSetPassword,
-  handleOpenModal,
-  handleInputsValues
+  handleInputsValues,
 }) => {
+  const { handleOpenModal, open } = useOpenModalStore((state) => state);
+
   const savePasswordMutation = useSavePassword();
   const darkMode = useThemeStore((state) => state.darkMode);
   const inputTheme = darkMode
@@ -60,13 +59,13 @@ export const AddPassModal: FC<Props> = ({
 
   return (
     <AnimatePresence>
-      {openModal && (
+      {open && (
         <motion.div
           className="fixed inset-0 bg-black/60 flex items-center justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => handleOpenModal(false)}
+          onClick={handleOpenModal}
         >
           <motion.div
             className="bg-zinc-900 p-8 rounded-2xl w-100 shadow-xl"
@@ -78,10 +77,7 @@ export const AddPassModal: FC<Props> = ({
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-white">Add new password</h2>
 
-              <button
-                className="cursor-pointer"
-                onClick={() => handleOpenModal(false)}
-              >
+              <button className="cursor-pointer" onClick={handleOpenModal}>
                 <X size={20} color="white" />
               </button>
             </div>

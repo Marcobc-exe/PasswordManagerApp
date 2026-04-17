@@ -6,8 +6,6 @@ type Props = {
   website: string;
   username: string;
   password: string;
-  openModal: boolean;
-  handleOpenModal: (value: boolean) => void;
   handleSetWebsite: (value: string) => void;
   handleSetPassword: (value: string) => void;
   handleSetUsername: (value: string) => void;
@@ -18,8 +16,6 @@ export const EmptyFallback: FC<Props> = ({
   website,
   username,
   password,
-  openModal,
-  handleOpenModal,
   handleSetWebsite,
   handleSetPassword,
   handleSetUsername,
@@ -27,9 +23,8 @@ export const EmptyFallback: FC<Props> = ({
 }) => {
   return (
     <>
-      <NoPasswordsYet handleOpenModal={handleOpenModal} />
+      <NoPasswordsYet />
       <AddPassModal
-        openModal={openModal}
         website={website}
         username={username}
         password={password}
@@ -37,7 +32,6 @@ export const EmptyFallback: FC<Props> = ({
         handleSetUsername={handleSetUsername}
         handleSetPassword={handleSetPassword}
         handleInputsValues={handleInputsValues}
-        handleOpenModal={handleOpenModal}
       />
     </>
   );
