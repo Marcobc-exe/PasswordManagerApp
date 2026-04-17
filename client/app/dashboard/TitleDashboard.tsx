@@ -1,3 +1,5 @@
+"use client";
+
 import { useThemeStore } from "@/app/store/themeStore";
 
 export const TitleDashboard = () => {
