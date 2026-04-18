@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { Spinner } from "@/components/Spinner";
+import Link from "next/link";
 
 export const MobileMenu = () => {
   const [open, setOpen] = useState(false);
@@ -23,9 +24,11 @@ export const MobileMenu = () => {
 
   const stylesButtons = "flex items-center gap-3 cursor-pointer";
 
+  const handleViewMenu = () => setOpen((prev) => !prev);
+
   const onLogout = async () => {
     await handleLogout();
-    setOpen(false);
+    handleViewMenu()
   };
 
   return (
@@ -35,7 +38,7 @@ export const MobileMenu = () => {
           p-2 rounded-full transition cursor-pointer
           ${darkMode ? "bg-[#21414f] hover:bg-[#0d1b21]" : "bg-[#ffd391] hover:bg-[#f9c16c]"}
         `}
-        onClick={() => setOpen(true)}
+        onClick={handleViewMenu}
       >
         <CircleUserRound size={28} />
       </button>
@@ -44,38 +47,47 @@ export const MobileMenu = () => {
         <div className="fixed inset-0 z-50">
           <div
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
+            onClick={handleViewMenu}
           >
             <div
               className={`absolute right-0 top-0 h-full w-64 p-6 flex flex-col gap-6 ${darkMode ? "bg-[#153746b4]" : "bg-[#dbb985]"}`}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className="cursor-pointer" onClick={() => setOpen(false)}>
+              <button className="cursor-pointer" onClick={handleViewMenu}>
                 <X />
               </button>
 
-              <button className={stylesButtons}>
+              <Link
+                className={stylesButtons}
+                href="/dashboard/profile"
+                onClick={handleViewMenu}
+              >
                 <User size={18} />
                 Profile
-              </button>
+              </Link>
 
-              <button className={stylesButtons}>
+              <Link
+                className={stylesButtons}
+                href="/dashboard"
+                onClick={handleViewMenu}
+              >
                 <Lock size={18} />
                 Passwords
-              </button>
+              </Link>
 
-              <button
-                onClick={toggleDarkMode}
-                className={stylesButtons}
-              >
+              <button onClick={toggleDarkMode} className={stylesButtons}>
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                 Appearance
               </button>
 
-              <button className={stylesButtons}>
+              <Link
+                className={stylesButtons}
+                href="/dashboard/settings"
+                onClick={handleViewMenu}
+              >
                 <Settings size={18} />
                 Settings
-              </button>
+              </Link>
 
               <button
                 onClick={onLogout}
