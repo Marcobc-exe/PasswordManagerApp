@@ -1,17 +1,25 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import { useThemeStore } from "../store/themeStore";
-import { LogOut, Menu, Moon, Plus, Sun, X } from "lucide-react";
+import {
+  CircleUserRound,
+  Lock,
+  LogOut,
+  Moon,
+  Settings,
+  Sun,
+  User,
+  X,
+} from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
+import { Spinner } from "@/components/Spinner";
 
-type Props = {
-  handleOpenModal: (value: boolean) => void;
-};
-
-export const MobileMenu: FC<Props> = ({ handleOpenModal }) => {
+export const MobileMenu = () => {
   const [open, setOpen] = useState(false);
   const toggleDarkMode = useThemeStore((state) => state.toggleDarkMode);
+
   const darkMode = useThemeStore((state) => state.darkMode);
   const { handleLogout, isLoading } = useLogout();
+  const label = isLoading ? <Spinner /> : <span>Logout</span>;
 
   const onLogout = async () => {
     await handleLogout();
@@ -20,8 +28,14 @@ export const MobileMenu: FC<Props> = ({ handleOpenModal }) => {
 
   return (
     <>
-      <button onClick={() => setOpen(true)}>
-        <Menu size={28} />
+      <button
+        className={`
+          p-2 rounded-full transition cursor-pointer
+          ${darkMode ? "bg-[#21414f] hover:bg-[#0d1b21]" : "bg-[#ffd391] hover:bg-[#f9c16c]"}
+        `}
+        onClick={() => setOpen(true)}
+      >
+        <CircleUserRound size={28} />
       </button>
 
       {open && (
@@ -38,23 +52,27 @@ export const MobileMenu: FC<Props> = ({ handleOpenModal }) => {
                 <X />
               </button>
 
+              <button className={"flex items-center gap-3 cursor-pointer"}>
+                <User size={18} />
+                Profile
+              </button>
+
+              <button className={"flex items-center gap-3 cursor-pointer"}>
+                <Lock size={18} />
+                Passwords
+              </button>
+
               <button
                 onClick={toggleDarkMode}
                 className="flex items-center gap-3 cursor-pointer"
               >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-                Toggle theme
+                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                Appearance
               </button>
 
-              <button
-                onClick={() => {
-                  handleOpenModal(true);
-                  setOpen(false);
-                }}
-                className="flex items-center gap-3 cursor-pointer"
-              >
-                <Plus size={20} />
-                Add password
+              <button className={"flex items-center gap-3 cursor-pointer"}>
+                <Settings size={18} />
+                Settings
               </button>
 
               <button
@@ -62,8 +80,8 @@ export const MobileMenu: FC<Props> = ({ handleOpenModal }) => {
                 disabled={isLoading}
                 className="flex items-center gap-3 text-red-400 cursor-pointer"
               >
-                <LogOut size={20} />
-                {"Logout"}
+                <LogOut size={18} />
+                {label}
               </button>
             </div>
           </div>
