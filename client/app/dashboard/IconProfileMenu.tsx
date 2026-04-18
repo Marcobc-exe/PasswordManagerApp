@@ -13,6 +13,7 @@ import {
   User,
 } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
+import Link from "next/link";
 
 export const IconProfileMenu = () => {
   const [open, setOpen] = useState(false);
@@ -31,6 +32,8 @@ export const IconProfileMenu = () => {
     }
   `;
 
+  const handleViewMenu = () => setOpen((prev) => !prev);
+
   return (
     <div className="relative">
       <button
@@ -38,7 +41,7 @@ export const IconProfileMenu = () => {
           p-2 rounded-full transition cursor-pointer
           ${darkMode ? "bg-[#21414f] hover:bg-[#0d1b21]" : "bg-[#ffd391] hover:bg-[#f9c16c]"}
         `}
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={handleViewMenu}
       >
         <CircleUserRound size={28} />
       </button>
@@ -47,7 +50,7 @@ export const IconProfileMenu = () => {
         <div className="fixed inset-0 z-50">
           <div
             className="absolute inset-0 bg-transparent"
-            onClick={() => setOpen(false)}
+            onClick={handleViewMenu}
           >
             <div
               className={`
@@ -56,25 +59,37 @@ export const IconProfileMenu = () => {
               `}
               onClick={(e) => e.stopPropagation()}
             >
-              <button className={stylesIcons}>
+              <Link
+                className={stylesIcons}
+                href="/dashboard/profile"
+                onClick={handleViewMenu}
+              >
                 <User size={18} />
                 Profile
-              </button>
+              </Link>
 
-              <button className={stylesIcons}>
+              <Link
+                className={stylesIcons}
+                href="/dashboard"
+                onClick={handleViewMenu}
+              >
                 <Lock size={18} />
                 Passwords
-              </button>
+              </Link>
 
               <button onClick={toggleDarkMode} className={stylesIcons}>
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                 Appearance
               </button>
 
-              <button className={stylesIcons}>
+              <Link
+                className={stylesIcons}
+                href="/dashboard/settings"
+                onClick={handleViewMenu}
+              >
                 <Settings size={18} />
                 Settings
-              </button>
+              </Link>
 
               <button
                 onClick={handleLogout}
