@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { ActionButton } from "@/components/ActionButton";
 
 type Props = {
-  // search: string;
   passwords: PasswordsProps[];
   visiblePasswords: number[];
   handleTogglePassword: (value: number) => void;
@@ -80,14 +79,17 @@ export const PasswordCards: FC<Props> = ({
                   }
                 `}
             >
-              <div className="flex flex-col gap-1 w-2/3">
-                <p className="text-lg font-semibold">{p.website}</p>
+              <div className="flex flex-col gap-1 flex-1 min-w-0">
+                <p className="text-lg font-semibold truncate">{p.website}</p>
                 <p
-                  className={`text-zinc-400 text-sm ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
+                  className={`text-zinc-400 text-sm truncate ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}
                 >
                   {p.username}
                 </p>
-                <p className="font-mono mt-2 text-lg truncate">
+                <p
+                  className="font-mono mt-2 text-lg truncate"
+                  title={isVisible ? p.password : undefined}
+                >
                   {isVisible ? p.password : "*********"}
                 </p>
               </div>
