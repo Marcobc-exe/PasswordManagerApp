@@ -21,6 +21,8 @@ export const MobileMenu = () => {
   const { handleLogout, isLoading } = useLogout();
   const label = isLoading ? <Spinner /> : <span>Logout</span>;
 
+  const stylesButtons = "flex items-center gap-3 cursor-pointer";
+
   const onLogout = async () => {
     await handleLogout();
     setOpen(false);
@@ -52,25 +54,25 @@ export const MobileMenu = () => {
                 <X />
               </button>
 
-              <button className={"flex items-center gap-3 cursor-pointer"}>
+              <button className={stylesButtons}>
                 <User size={18} />
                 Profile
               </button>
 
-              <button className={"flex items-center gap-3 cursor-pointer"}>
+              <button className={stylesButtons}>
                 <Lock size={18} />
                 Passwords
               </button>
 
               <button
                 onClick={toggleDarkMode}
-                className="flex items-center gap-3 cursor-pointer"
+                className={stylesButtons}
               >
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                 Appearance
               </button>
 
-              <button className={"flex items-center gap-3 cursor-pointer"}>
+              <button className={stylesButtons}>
                 <Settings size={18} />
                 Settings
               </button>
@@ -78,7 +80,7 @@ export const MobileMenu = () => {
               <button
                 onClick={onLogout}
                 disabled={isLoading}
-                className="flex items-center gap-3 text-red-400 cursor-pointer"
+                className={stylesButtons}
               >
                 <LogOut size={18} />
                 {label}
