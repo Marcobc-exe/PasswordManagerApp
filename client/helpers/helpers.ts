@@ -1,4 +1,4 @@
-import { PasswordsProps } from "@/app/type";
+import { PasswordsProps } from "@/src/types/type";
 
 export function getAccessToken(): string | null {
   if (typeof window === "undefined") return null;

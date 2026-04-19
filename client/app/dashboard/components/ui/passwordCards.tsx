@@ -1,4 +1,3 @@
-import { PasswordsProps } from "../type";
 import { Eye, EyeOff, Copy, Trash2, Star, StarOff } from "lucide-react";
 import { FC } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
@@ -9,6 +8,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import { ActionButton } from "@/components/ActionButton";
+import { PasswordsProps } from "@/src/types/type";
 
 type Props = {
   passwords: PasswordsProps[];
