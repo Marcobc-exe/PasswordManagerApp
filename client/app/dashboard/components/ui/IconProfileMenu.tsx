@@ -3,17 +3,10 @@
 import { useState } from "react";
 import { useThemeStore } from "@/app/store/themeStore";
 import { useLogout } from "@/hooks/useLogout";
-import {
-  CircleUserRound,
-  Lock,
-  LogOut,
-  Moon,
-  Settings,
-  Sun,
-  User,
-} from "lucide-react";
+import { Lock, LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";
+import { IconProfileBtn } from "../buttons/IconProfileBtn";
 
 export const IconProfileMenu = () => {
   const [open, setOpen] = useState(false);
@@ -36,15 +29,7 @@ export const IconProfileMenu = () => {
 
   return (
     <div className="relative">
-      <button
-        className={`
-          p-2 rounded-full transition cursor-pointer
-          ${darkMode ? "bg-[#21414f] hover:bg-[#0d1b21]" : "bg-[#ffd391] hover:bg-[#f9c16c]"}
-        `}
-        onClick={handleViewMenu}
-      >
-        <CircleUserRound size={28} />
-      </button>
+      <IconProfileBtn handleViewMenu={handleViewMenu} />
 
       {open && (
         <div className="fixed inset-0 z-50">

@@ -1,18 +1,10 @@
 import { useState } from "react";
 import { useThemeStore } from "../../../store/themeStore";
-import {
-  CircleUserRound,
-  Lock,
-  LogOut,
-  Moon,
-  Settings,
-  Sun,
-  User,
-  X,
-} from "lucide-react";
+import { Lock, LogOut, Moon, Settings, Sun, User, X } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";
+import { IconProfileBtn } from "../buttons/IconProfileBtn";
 
 export const MobileMenu = () => {
   const [open, setOpen] = useState(false);
@@ -28,20 +20,12 @@ export const MobileMenu = () => {
 
   const onLogout = async () => {
     await handleLogout();
-    handleViewMenu()
+    handleViewMenu();
   };
 
   return (
     <>
-      <button
-        className={`
-          p-2 rounded-full transition cursor-pointer
-          ${darkMode ? "bg-[#21414f] hover:bg-[#0d1b21]" : "bg-[#ffd391] hover:bg-[#f9c16c]"}
-        `}
-        onClick={handleViewMenu}
-      >
-        <CircleUserRound size={28} />
-      </button>
+      <IconProfileBtn handleViewMenu={handleViewMenu} />
 
       {open && (
         <div className="fixed inset-0 z-50">
