@@ -1,5 +1,5 @@
+import { useThemeStore } from "@/app/store/themeStore";
 import { Spinner } from "@/components/Spinner";
-import { useThemeStore } from "../store/themeStore";
 
 export const Loading = () => {
   const darkMode = useThemeStore((state) => state.darkMode);

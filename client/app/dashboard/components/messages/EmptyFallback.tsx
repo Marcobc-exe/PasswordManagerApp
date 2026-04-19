@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { AddPassModal } from "./addPassModal";
 import { NoPasswordsYet } from "./noPasswords";
+import { AddPassModal } from "../ui/addPassModal";
 
 type Props = {
   website: string;

@@ -1,7 +1,7 @@
 "use client"
 
 import { Lock } from "lucide-react";
-import { useOpenModalStore } from "../store/openPasswordModalStore";
+import { useOpenModalStore } from "../../../store/openPasswordModalStore";
 
 export const NoPasswordsYet = () => {
   const handleOpenModal = useOpenModalStore((state) => state.handleOpenModal);

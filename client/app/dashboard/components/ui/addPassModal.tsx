@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { FC, SyntheticEvent } from "react";
-import { useThemeStore } from "../store/themeStore";
+import { useThemeStore } from "../../../store/themeStore";
 import { useSavePassword } from "@/features/passwords/passwords.hook";
 import { Spinner } from "@/components/Spinner";
 import { toast } from "sonner";
-import { useOpenModalStore } from "../store/openPasswordModalStore";
+import { useOpenModalStore } from "../../../store/openPasswordModalStore";
 
 type Props = {
   website: string;

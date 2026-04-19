@@ -1,15 +1,15 @@
 import { usePasswords } from "@/features/passwords/passwords.hook";
 import { useMemo, useState } from "react";
-import { Loading } from "./Loading";
-import { ErrorMsg } from "./ErrorMessage";
-import { AddPassModal } from "./addPassModal";
-import { SearchBar } from "./SearchBar";
-import { PasswordCards } from "./passwordCards";
-import { FilterPasswords } from "./FilterPasswords";
-import { QueryStateHandler } from "./QueryStateHandler";
-import { EmptyFallback } from "./EmptyFallback";
+import { ErrorMsg } from "./components/messages/ErrorMessage";
+import { AddPassModal } from "./components/ui/addPassModal";
+import { SearchBar } from "./components/ui/SearchBar";
+import { FilterPasswords } from "./components/utils/FilterPasswords";
+import { QueryStateHandler } from "./components/utils/QueryStateHandler";
 import { sorters } from "@/helpers/helpers";
 import { useOpenModalStore } from "../store/openPasswordModalStore";
+import { EmptyFallback } from "./components/messages/EmptyFallback";
+import { Loading } from "@/components/Loading";
+import { PasswordCards } from "./components/ui/passwordCards";
 
 export const DashboardContent = () => {
   const [visiblePasswords, setVisiblePasswords] = useState<number[]>([]);
