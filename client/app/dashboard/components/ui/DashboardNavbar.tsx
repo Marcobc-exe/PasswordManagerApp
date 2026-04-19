@@ -1,7 +1,7 @@
 "use client";
 import { TitleDashboard } from "./TitleDashboard";
 import { IconProfileMenu } from "./IconProfileMenu";
-import { AddPasswordBtn } from "./AddPasswordBtn";
+import { AddPasswordBtn } from "../buttons/AddPasswordBtn";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@mui/material";
 import { MobileMenu } from "./MobileMenu";
