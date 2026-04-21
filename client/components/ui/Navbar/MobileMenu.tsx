@@ -1,51 +1,48 @@
-"use client";
-
 import { useState } from "react";
-import { useThemeStore } from "@/app/store/themeStore";
+import { Lock, LogOut, Moon, Settings, Sun, User, X } from "lucide-react";
 import { useLogout } from "@/hooks/useLogout";
-import { Lock, LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";
-import { IconProfileBtn } from "../buttons/IconProfileBtn";
+import { useThemeStore } from "@/app/store/themeStore";
+import { IconProfileBtn } from "@/app/dashboard/components/buttons/IconProfileBtn";
 
-export const IconProfileMenu = () => {
+export const MobileMenu = () => {
   const [open, setOpen] = useState(false);
-  const darkMode = useThemeStore((state) => state.darkMode);
-
   const toggleDarkMode = useThemeStore((state) => state.toggleDarkMode);
-  const { handleLogout, isLoading } = useLogout();
 
+  const darkMode = useThemeStore((state) => state.darkMode);
+  const { handleLogout, isLoading } = useLogout();
   const label = isLoading ? <Spinner /> : <span>Logout</span>;
 
-  const stylesIcons = `cursor-pointer w-full flex items-center gap-3 px-3 py-2 rounded-xl transition
-    ${
-      darkMode
-        ? "bg-[#0f2027] hover:bg-white/10"
-        : "hover:bg-[#f6c479] text-black"
-    }
-  `;
+  const stylesButtons = "flex items-center gap-3 cursor-pointer";
 
   const handleViewMenu = () => setOpen((prev) => !prev);
 
+  const onLogout = async () => {
+    await handleLogout();
+    handleViewMenu();
+  };
+
   return (
-    <div className="relative">
+    <>
       <IconProfileBtn handleViewMenu={handleViewMenu} />
 
       {open && (
         <div className="fixed inset-0 z-50">
           <div
-            className="absolute inset-0 bg-transparent"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={handleViewMenu}
           >
             <div
-              className={`
-                absolute right-18 mt-4 w-52 rounded-2xl shadow-lg p-2 z-50 gap-2
-                ${darkMode ? "bg-[#0f2027] border border-[#21414f]" : "bg-white text-black border border-zinc-200"}
-              `}
+              className={`absolute right-0 top-0 h-full w-64 p-6 flex flex-col gap-6 ${darkMode ? "bg-[#153746b4]" : "bg-[#dbb985]"}`}
               onClick={(e) => e.stopPropagation()}
             >
+              <button className="cursor-pointer" onClick={handleViewMenu}>
+                <X />
+              </button>
+
               <Link
-                className={stylesIcons}
+                className={stylesButtons}
                 href="/dashboard/profile"
                 onClick={handleViewMenu}
               >
@@ -54,7 +51,7 @@ export const IconProfileMenu = () => {
               </Link>
 
               <Link
-                className={stylesIcons}
+                className={stylesButtons}
                 href="/dashboard"
                 onClick={handleViewMenu}
               >
@@ -62,13 +59,13 @@ export const IconProfileMenu = () => {
                 Passwords
               </Link>
 
-              <button onClick={toggleDarkMode} className={stylesIcons}>
+              <button onClick={toggleDarkMode} className={stylesButtons}>
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                 Appearance
               </button>
 
               <Link
-                className={stylesIcons}
+                className={stylesButtons}
                 href="/dashboard/settings"
                 onClick={handleViewMenu}
               >
@@ -77,15 +74,9 @@ export const IconProfileMenu = () => {
               </Link>
 
               <button
-                onClick={handleLogout}
+                onClick={onLogout}
                 disabled={isLoading}
-                className={`cursor-pointer w-full flex items-center gap-3 p-3 rounded-xl transition 
-                  ${
-                    darkMode
-                      ? "text-white bg-[#0f2027] hover:bg-red-700"
-                      : "text-black hover:bg-red-700 hover:text-white"
-                  }
-                `}
+                className={stylesButtons}
               >
                 <LogOut size={18} />
                 {label}
@@ -94,6 +85,6 @@ export const IconProfileMenu = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
