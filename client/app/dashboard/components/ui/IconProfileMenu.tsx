@@ -39,7 +39,7 @@ export const IconProfileMenu = () => {
           >
             <div
               className={`
-                absolute right-0 mt-13 w-52 rounded-2xl shadow-lg p-2 z-50 gap-2
+                absolute right-18 mt-4 w-52 rounded-2xl shadow-lg p-2 z-50 gap-2
                 ${darkMode ? "bg-[#0f2027] border border-[#21414f]" : "bg-white text-black border border-zinc-200"}
               `}
               onClick={(e) => e.stopPropagation()}
