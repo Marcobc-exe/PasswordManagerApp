@@ -1,12 +1,12 @@
 "use client";
-import { TitleDashboard } from "./TitleDashboard";
-import { IconProfileMenu } from "./IconProfileMenu";
-import { AddPasswordBtn } from "../buttons/AddPasswordBtn";
+import { MobileMenu } from "./MobileMenu";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@mui/material";
-import { MobileMenu } from "./MobileMenu";
+import { IconProfileMenu } from "./IconProfileMenu";
+import { TitleDashboard } from "@/app/dashboard/components/ui/TitleDashboard";
+import { AddPasswordBtn } from "@/app/dashboard/components/buttons/AddPasswordBtn";
 
-export const DashboardNavbar = () => {
+export const Navbar = () => {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const pathname = usePathname();
   const isPasswordsPage = pathname === "/dashboard";
