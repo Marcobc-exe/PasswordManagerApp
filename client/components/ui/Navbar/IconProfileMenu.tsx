@@ -30,7 +30,7 @@ export const IconProfileMenu = () => {
   const themeView = darkMode
     ? "bg-[#0f2027] border border-[#21414f]"
     : "bg-white text-black border border-zinc-200";
-  const desktopView = `absolute right-18 mt-4 w-52 rounded-2xl shadow-lg z-50 gap-2 ${themeView}`;
+  const desktopView = `absolute right-18 mt-4 w-61 rounded-2xl shadow-lg z-50 gap-2 ${themeView}`;
   const mobileView = `absolute w-full h-full shadow-lg z-50 gap-2 ${themeView}`;
 
   const handleViewMenu = () => setOpen((prev) => !prev);
