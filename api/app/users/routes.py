@@ -1,8 +1,8 @@
 import psycopg2
 from fastapi import APIRouter, Form, HTTPException, status, Depends
 
-from app.users.services import create_user, get_user_profile
-from app.users.schemas import UserProfileResponse
+from app.users.services import create_user, get_user_profile, update_user_profile, change_user_password
+from app.users.schemas import UserProfileResponse, UpdateUserProfileRequest, UpdateUserProfileResponse, PasswordMessageResponse, ChangePasswordRequest
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -53,4 +53,56 @@ def get_current_user_profile(user_email: str = Depends(get_current_user)):
     raise HTTPException(
       status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
       detail="Unexpected server error",
+    ) from exc
+    
+@router.patch(
+  "/me",
+  summary="Update current user profile",
+  description="Update the authenticated user's profile information.",
+  response_model=UpdateUserProfileResponse
+)
+def update_current_user_profile(
+  payload: UpdateUserProfileRequest,
+  user_email: str = Depends(get_current_user)
+):
+  try:
+    return update_user_profile(
+      user_email=user_email,
+      username=payload.username,
+      first_name=payload.first_name,
+      last_name=payload.last_name,
+      email=payload.email,
+      avatar_color=payload.avatar_color
+    )
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+    
+@router.patch(
+  "/me/password",
+  summary="Change current user password",
+  description="Update the authenticated user's password.",
+  response_model=PasswordMessageResponse
+)
+def update_current_user_password(
+  payload: ChangePasswordRequest,
+  user_email: str = Depends(get_current_user)
+):
+  
+  try:
+    return change_user_password(
+      user_email=user_email,
+      current_password=payload.current_password,
+      new_password=payload.new_password,
+    )
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
     ) from exc
