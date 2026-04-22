@@ -6,9 +6,9 @@ import { UserSubMenu } from "./UserSubMenu";
 import { useLogout } from "@/hooks/useLogout";
 import { Spinner } from "@/components/Spinner";
 import { useThemeStore } from "@/app/store/themeStore";
-import { Lock, LogOut, Moon, Settings, Sun, User, X } from "lucide-react";
-import { IconProfileBtn } from "../../../app/dashboard/components/buttons/IconProfileBtn";
+import { Lock, LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useMediaQuery } from "@mui/material";
+import { IconProfileBtn } from "@/app/dashboard/components/buttons/IconProfileBtn";
 
 export const IconProfileMenu = () => {
   const [open, setOpen] = useState(false);
