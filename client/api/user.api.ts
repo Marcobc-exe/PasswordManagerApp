@@ -1,4 +1,8 @@
 import {
+  ChangePasswordFormDTO,
+  ChangePasswordSuccessSchema,
+  UpdateUserProfileFormDTO,
+  UpdateUserProfileSuccessSchema,
   UserProfileFailedSchema,
   UserProfileSuccessSchema,
 } from "@/features/user/user.schemas";
@@ -16,4 +20,36 @@ export async function getCurrentUserProfile() {
   if (failed.success) throw new Error(failed.data.detail);
 
   throw new Error("Invalid user profile response");
+}
+
+export async function updateCurrentUserProfile(
+  payload: UpdateUserProfileFormDTO,
+) {
+  const { data } = await api.patch("/users/me", payload, {
+    validateStatus: () => true,
+  });
+
+  const success = UpdateUserProfileSuccessSchema.safeParse(data);
+  if (success.success) return success.data;
+
+  const failed = UserProfileFailedSchema.safeParse(data);
+  if (failed.success) throw new Error(failed.data.detail);
+
+  throw new Error("Invalid update profile response");
+}
+
+export async function changeCurrentUserPassword(
+  payload: ChangePasswordFormDTO,
+) {
+  const { data } = await api.patch("/users/me/password", payload, {
+    validateStatus: () => true,
+  });
+
+  const success = ChangePasswordSuccessSchema.safeParse(data);
+  if (success.success) return success.data;
+
+  const failed = UserProfileFailedSchema.safeParse(data);
+  if (failed.success) throw new Error(failed.data.detail);
+
+  throw new Error("Invalid change password response");
 }
