@@ -13,12 +13,15 @@ export const UserSubMenu: FC<Props> = ({ handleViewMenu }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data, isLoading, error } = useCurrentUserProfile();
 
-  const fullName = [data?.first_name, data?.last_name].filter(Boolean).join(" ");
+  const fullName = [data?.first_name, data?.last_name]
+    .filter(Boolean)
+    .join(" ");
 
   const primaryText =
     fullName || data?.username || data?.email || "Unknown user";
   const secondaryText = data?.username ? data.username : data?.email || "";
   const avatarLetter = primaryText.charAt(0).toUpperCase();
+  const avatarColor = data?.avatar_color || "#2563eb";
 
   return (
     <NavbarQueryStateHandler
@@ -27,7 +30,10 @@ export const UserSubMenu: FC<Props> = ({ handleViewMenu }) => {
       errorFallback={(message) => <ErrorNavbar message={message} />}
     >
       <div className="flex items-center gap-3 p-3 border-b border-white/10">
-        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+          style={{ backgroundColor: avatarColor }}
+        >
           {avatarLetter}
         </div>
 
