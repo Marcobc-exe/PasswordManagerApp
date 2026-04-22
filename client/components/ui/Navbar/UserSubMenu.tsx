@@ -13,7 +13,7 @@ export const UserSubMenu: FC<Props> = ({ handleViewMenu }) => {
   const isMobile = useMediaQuery("(max-width: 600px)");
   const { data, isLoading, error } = useCurrentUserProfile();
 
-  const fullName = [data?.first_name, data?.last_name].filter(Boolean).join("");
+  const fullName = [data?.first_name, data?.last_name].filter(Boolean).join(" ");
 
   const primaryText =
     fullName || data?.username || data?.email || "Unknown user";

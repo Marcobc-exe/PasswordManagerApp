@@ -2,7 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
-import { getAccessToken } from "@/helpers/helpers";
+import { getAccessToken, getRefreshToken } from "@/helpers/helpers";
 import { Spinner } from "./Spinner";
 import { useThemeStore } from "@/app/store/themeStore";
 
@@ -25,13 +25,14 @@ export function ProtectedRoute({ children }: Props) {
   const spinnerColor = darkMode ? "border-white" : "border-black";
 
   const isClient = useIsClient();
-  const token = isClient ? getAccessToken() : null;
+  const accessToken = isClient ? getAccessToken() : null;
+  const refreshToken = isClient ? getRefreshToken() : null;
 
   useEffect(() => {
-    if (isClient && !token) {
+    if (isClient && !accessToken && !refreshToken) {
       router.replace("/login");
     }
-  }, [isClient, token, router]);
+  }, [isClient, accessToken, refreshToken, router]);
 
   if (!isClient) {
     return (
@@ -44,7 +45,7 @@ export function ProtectedRoute({ children }: Props) {
     );
   }
 
-  if (!token) return null;
+  if (!accessToken && !refreshToken) return null;
 
   return <>{children}</>;
 }

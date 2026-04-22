@@ -7,6 +7,9 @@ import {
   useUpdateCurrentUserProfile,
 } from "@/features/user/user.hook";
 import { UserProfileSuccessDTO } from "@/features/user/user.schemas";
+import { Eye, EyeOff } from "lucide-react";
+import { Spinner } from "@/components/Spinner";
+import { useThemeStore } from "@/app/store/themeStore";
 
 type Props = {
   user: UserProfileSuccessDTO;
@@ -24,6 +27,8 @@ const avatarColors = [
 ];
 
 export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
+  const darkMode = useThemeStore((state) => state.darkMode);
+
   const updateProfileMutation = useUpdateCurrentUserProfile();
   const changePasswordMutation = useChangeCurrentUserPassword();
 
@@ -31,10 +36,19 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
   const [lastName, setLastName] = useState(user.last_name || "");
   const [username, setUsername] = useState(user.username || "");
   const [email, setEmail] = useState(user.email || "");
-  const [avatarColor, setAvatarColor] = useState(user.avatar_color || "#2563eb");
+  const [avatarColor, setAvatarColor] = useState(
+    user.avatar_color || "#2563eb",
+  );
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+
+  const spinnerColor = darkMode ? "border-white" : "border-black";
+  const disabled =
+    updateProfileMutation.isPending || changePasswordMutation.isPending;
 
   const handleSaveProfile = () => {
     updateProfileMutation.mutate(
@@ -70,6 +84,7 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
           toast.success("Password updated successfully");
           setCurrentPassword("");
           setNewPassword("");
+          onSuccess();
         },
         onError: (error) => {
           const message =
@@ -94,6 +109,7 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
                 avatarColor === color ? "border-white" : "border-transparent"
               }`}
               style={{ backgroundColor: color }}
+              disabled={disabled}
             />
           ))}
         </div>
@@ -105,6 +121,7 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+          disabled={disabled}
         />
       </div>
 
@@ -114,6 +131,7 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+          disabled={disabled}
         />
       </div>
 
@@ -123,6 +141,7 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+          disabled={disabled}
         />
       </div>
 
@@ -132,34 +151,56 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+          disabled={disabled}
         />
       </div>
 
       <div className="border-t border-white/10 pt-4 flex flex-col gap-4">
         <p className="font-semibold">Change password</p>
 
-        <input
-          type="password"
-          placeholder="Current password"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
-        />
+        <div className="relative">
+          <input
+            type={showCurrentPassword ? "text" : "password"}
+            placeholder="Current password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+            disabled={disabled}
+          />
+          <button
+            type="button"
+            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 hover:backdrop-opacity-100 transition cursor-pointer"
+          >
+            {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
 
-        <input
-          type="password"
-          placeholder="New password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
-        />
+        <div className="relative">
+          <input
+            type={showNewPassword ? "text" : "password"}
+            placeholder="New password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+            disabled={disabled}
+          />
+
+          <button
+            type="button"
+            onClick={() => setShowNewPassword(!showNewPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 hover:backdrop-opacity-100 transition cursor-pointer"
+          >
+            {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
 
         <button
           type="button"
           onClick={handleChangePassword}
-          className="px-4 py-3 rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition cursor-pointer"
+          className="flex items-center justify-center px-4 py-3 rounded-xl bg-zinc-700 text-white hover:bg-zinc-600 transition cursor-pointer"
         >
-          Update password
+          {!disabled ? "Update password" : <Spinner color={spinnerColor} />}
         </button>
       </div>
 
@@ -167,9 +208,9 @@ export function EditProfileForm({ user, onCancel, onSuccess }: Props) {
         <button
           type="button"
           onClick={handleSaveProfile}
-          className="flex-1 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
+          className="flex-1 flex items-center justify-center px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
         >
-          Save changes
+          {!disabled ? "Save changes" : <Spinner color={spinnerColor} />}
         </button>
 
         <button
