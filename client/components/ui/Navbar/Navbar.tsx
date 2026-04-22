@@ -1,13 +1,10 @@
 "use client";
-import { MobileMenu } from "./MobileMenu";
 import { usePathname } from "next/navigation";
-import { useMediaQuery } from "@mui/material";
 import { IconProfileMenu } from "./IconProfileMenu";
 import { TitleDashboard } from "@/app/dashboard/components/ui/TitleDashboard";
 import { AddPasswordBtn } from "@/app/dashboard/components/buttons/AddPasswordBtn";
 
 export const Navbar = () => {
-  const isMobile = useMediaQuery("(max-width: 600px)");
   const pathname = usePathname();
   const isPasswordsPage = pathname === "/dashboard";
 
@@ -17,7 +14,7 @@ export const Navbar = () => {
 
       <div className="flex items-center gap-3">
         {isPasswordsPage && <AddPasswordBtn />}
-        {isMobile ? <MobileMenu /> : <IconProfileMenu />}
+        <IconProfileMenu />
       </div>
     </header>
   );
