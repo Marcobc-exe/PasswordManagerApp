@@ -1,12 +1,20 @@
 import { useCurrentUserProfile } from "@/features/user/user.hook";
 import { NavbarQueryStateHandler } from "./NavbarQueryStateHandler";
 import { ErrorNavbar } from "../Errors/ErrorNavbar";
+import { X } from "lucide-react";
+import { FC } from "react";
+import { useMediaQuery } from "@mui/material";
 
-export const UserSubMenu = () => {
+type Props = {
+  handleViewMenu: () => void;
+};
+
+export const UserSubMenu: FC<Props> = ({ handleViewMenu }) => {
+  const isMobile = useMediaQuery("(max-width: 600px)");
   const { data, isLoading, error } = useCurrentUserProfile();
 
   const fullName = [data?.first_name, data?.last_name].filter(Boolean).join("");
-  
+
   const primaryText =
     fullName || data?.username || data?.email || "Unknown user";
   const secondaryText = data?.username ? data.username : data?.email || "";
@@ -27,6 +35,14 @@ export const UserSubMenu = () => {
           <p className="font-semibold truncate">{primaryText}</p>
           <p className="text-sm text-zinc-400 truncate">{secondaryText}</p>
         </div>
+        {isMobile && (
+          <button
+            className="cursor-pointer mr-4 absolute right-0"
+            onClick={handleViewMenu}
+          >
+            <X />
+          </button>
+        )}
       </div>
     </NavbarQueryStateHandler>
   );

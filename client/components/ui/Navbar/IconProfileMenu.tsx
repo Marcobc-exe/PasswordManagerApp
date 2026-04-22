@@ -6,12 +6,14 @@ import { UserSubMenu } from "./UserSubMenu";
 import { useLogout } from "@/hooks/useLogout";
 import { Spinner } from "@/components/Spinner";
 import { useThemeStore } from "@/app/store/themeStore";
-import { Lock, LogOut, Moon, Settings, Sun, User } from "lucide-react";
+import { Lock, LogOut, Moon, Settings, Sun, User, X } from "lucide-react";
 import { IconProfileBtn } from "../../../app/dashboard/components/buttons/IconProfileBtn";
+import { useMediaQuery } from "@mui/material";
 
 export const IconProfileMenu = () => {
   const [open, setOpen] = useState(false);
   const darkMode = useThemeStore((state) => state.darkMode);
+  const isMobile = useMediaQuery("(max-width: 600px)");
 
   const toggleDarkMode = useThemeStore((state) => state.toggleDarkMode);
   const { handleLogout, isLoading } = useLogout();
@@ -25,6 +27,11 @@ export const IconProfileMenu = () => {
         : "hover:bg-[#f6c479] text-black"
     }
   `;
+  const themeView = darkMode
+    ? "bg-[#0f2027] border border-[#21414f]"
+    : "bg-white text-black border border-zinc-200";
+  const desktopView = `absolute right-18 mt-4 w-52 rounded-2xl shadow-lg z-50 gap-2 ${themeView}`;
+  const mobileView = `absolute w-full h-full shadow-lg z-50 gap-2 ${themeView}`;
 
   const handleViewMenu = () => setOpen((prev) => !prev);
 
@@ -39,13 +46,10 @@ export const IconProfileMenu = () => {
             onClick={handleViewMenu}
           >
             <div
-              className={`
-                absolute right-18 mt-4 w-52 rounded-2xl shadow-lg z-50 gap-2
-                ${darkMode ? "bg-[#0f2027] border border-[#21414f]" : "bg-white text-black border border-zinc-200"}
-              `}
+              className={isMobile ? mobileView : desktopView}
               onClick={(e) => e.stopPropagation()}
             >
-              <UserSubMenu />
+              <UserSubMenu handleViewMenu={handleViewMenu} />
 
               <div className="p-2">
                 <Link
