@@ -1,4 +1,7 @@
+import { useThemeStore } from "@/app/store/themeStore";
+import { ActionButton } from "@/components/ActionButton";
 import { UserProfileSuccessDTO } from "@/features/user/user.schemas";
+import { Pen } from "lucide-react";
 import { FC } from "react";
 
 type Props = {
@@ -7,6 +10,7 @@ type Props = {
 };
 
 export const ProfileInfo: FC<Props> = ({ user, handlerIsEditing }) => {
+  const darkMode = useThemeStore((state) => state.darkMode);
   const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
   const displayName = fullName || user.username || "Not set";
   const avatarLetter = displayName.charAt(0).toUpperCase();
@@ -14,13 +18,20 @@ export const ProfileInfo: FC<Props> = ({ user, handlerIsEditing }) => {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="relative flex justify-center">
         <div
           className="w-20 h-20 rounded-full flex items-center justify-center text-white text-3xl font-semibold"
           style={{ backgroundColor: avatarColor }}
         >
           {avatarLetter}
         </div>
+        <ActionButton
+          darkMode={darkMode}
+          icon={<Pen size={20} />}
+          onClick={() => handlerIsEditing(true)}
+          label="Edit"
+          styles="absolute right-0 p-3 rounded-full transition cursor-pointer"
+        />
       </div>
 
       <div className="flex flex-col gap-4">
@@ -44,13 +55,6 @@ export const ProfileInfo: FC<Props> = ({ user, handlerIsEditing }) => {
           <p className="text-lg font-mono">************</p>
         </div>
       </div>
-
-      <button
-        onClick={() => handlerIsEditing(true)}
-        className="px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition cursor-pointer"
-      >
-        Edit profile
-      </button>
     </>
   );
 };
