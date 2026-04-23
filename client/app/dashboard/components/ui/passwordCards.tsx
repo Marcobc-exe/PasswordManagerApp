@@ -109,6 +109,7 @@ export const PasswordCards: FC<Props> = ({
                   deletePasswordMutation.isPending
                 }
                 darkMode={darkMode}
+                styles="p-2 rounded-lg transition cursor-pointer mx-0.5"
               />
               <ActionButton
                 icon={isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -119,6 +120,7 @@ export const PasswordCards: FC<Props> = ({
                   deletePasswordMutation.isPending
                 }
                 darkMode={darkMode}
+                styles="p-2 rounded-lg transition cursor-pointer mx-0.5"
               />
               <ActionButton
                 icon={<Copy size={18} />}
@@ -129,6 +131,7 @@ export const PasswordCards: FC<Props> = ({
                   deletePasswordMutation.isPending
                 }
                 darkMode={darkMode}
+                styles="p-2 rounded-lg transition cursor-pointer mx-0.5"
               />
               <ActionButton
                 icon={<Trash2 size={18} />}
@@ -140,6 +143,7 @@ export const PasswordCards: FC<Props> = ({
                 }
                 darkMode={darkMode}
                 hoverColor="hover:bg-red-400"
+                styles="p-2 rounded-lg transition cursor-pointer mx-0.5"
               />
             </motion.div>
           );

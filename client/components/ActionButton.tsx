@@ -8,20 +8,22 @@ import {
 
 type Props = {
   icon: ReactNode;
-  label: string;
+  label?: string;
   onClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   darkMode: boolean;
   hoverColor?: string;
+  styles: string;
 };
 
 export const ActionButton: FC<Props> = ({
   icon,
-  label,
+  label =  "",
   onClick,
-  disabled,
+  disabled = false,
   darkMode,
   hoverColor,
+  styles
 }) => {
   const baseBg = darkMode ? "bg-[#21414f]" : "bg-[#ffd391]";
   const defaultHover = darkMode ? "hover:bg-[#0d1b21]" : "hover:bg-[#f9c16c]";
@@ -34,7 +36,7 @@ export const ActionButton: FC<Props> = ({
             onClick={onClick}
             disabled={disabled}
             className={`
-              p-2 rounded-lg transition cursor-pointer mx-0.5
+              ${styles}
               ${baseBg}
               ${hoverColor ? hoverColor : defaultHover}
             `}
