@@ -225,3 +225,57 @@ def change_user_password(
   finally:
     cursor.close()
     conn.close()
+    
+def delete_user_account(user_email: str, current_password: str):
+  conn = get_db_connection()
+  cursor = conn.cursor()
+
+  try:
+    current_password = current_password.strip()
+
+    if not current_password:
+      raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Current pasword is required"
+      )
+      
+    cursor.execute(
+      """
+      SELECT master_pass
+      FROM users
+      WHERE email = %s
+      """,
+      (user_email,),
+    )
+    user = cursor.fetchone()
+
+    if user is None:
+      raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="User not found"
+      )
+      
+    stored_hased_password = user[0]
+
+    if not verify_password(current_password, stored_hased_password):
+      raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Incorrect password"
+      )
+      
+    cursor.execute(
+      """
+      DELETE FROM users
+      WHERE email = %s
+      """,
+      (user_email,),
+    )
+    conn.commit()
+
+    return {
+      "message": "Account deleted successfully",
+    }
+    
+  finally:
+    cursor.close()
+    conn.close()

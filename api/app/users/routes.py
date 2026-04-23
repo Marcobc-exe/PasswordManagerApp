@@ -1,8 +1,8 @@
 import psycopg2
 from fastapi import APIRouter, Form, HTTPException, status, Depends
 
-from app.users.services import create_user, get_user_profile, update_user_profile, change_user_password
-from app.users.schemas import UserProfileResponse, UpdateUserProfileRequest, UpdateUserProfileResponse, PasswordMessageResponse, ChangePasswordRequest
+from app.users.services import create_user, get_user_profile, update_user_profile, change_user_password, delete_user_account
+from app.users.schemas import UserProfileResponse, UpdateUserProfileRequest, UpdateUserProfileResponse, PasswordMessageResponse, ChangePasswordRequest, MessageResponse, DeleteUserRequest
 from app.auth import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -98,6 +98,29 @@ def update_current_user_password(
       user_email=user_email,
       current_password=payload.current_password,
       new_password=payload.new_password,
+    )
+  except HTTPException as exc:
+    raise exc
+  except Exception as exc:
+    raise HTTPException(
+      status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+      detail="Unexpected server error"
+    ) from exc
+    
+@router.delete(
+  "/me",
+  summary="Delete current user account",
+  description="Delete the authenticated user's account after password confirmation.",
+  response_model=MessageResponse
+)
+def delete_current_user_account(
+  payload: DeleteUserRequest,
+  user_email: str = Depends(get_current_user)
+):
+  try:
+    return delete_user_account(
+      user_email=user_email,
+      current_password=payload.current_password
     )
   except HTTPException as exc:
     raise exc
