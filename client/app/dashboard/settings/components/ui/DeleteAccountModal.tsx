@@ -7,6 +7,7 @@ import { clearTokens } from "@/helpers/helpers";
 import { clearAuthCookie } from "@/helpers/cookies";
 import { useDeleteCurrentUserAccount } from "@/features/user/user.hook";
 import { useThemeStore } from "@/app/store/themeStore";
+import { Eye, EyeOff } from "lucide-react";
 
 type Props = {
   open: boolean;
@@ -20,6 +21,7 @@ export function DeleteAccountModal({ open, onClose }: Props) {
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [confirmationText, setConfirmationText] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   if (!open) return null;
 
@@ -28,7 +30,7 @@ export function DeleteAccountModal({ open, onClose }: Props) {
 
   const handleDelete = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!isValid) return;
 
     deleteAccountMutation.mutate(currentPassword, {
@@ -44,6 +46,12 @@ export function DeleteAccountModal({ open, onClose }: Props) {
         toast.warning(message);
       },
     });
+  };
+
+  const handleCloseModal = () => {
+    setCurrentPassword("");
+    setConfirmationText("");
+    onClose();
   };
 
   return (
@@ -72,12 +80,21 @@ export function DeleteAccountModal({ open, onClose }: Props) {
 
           <div>
             <label className="text-sm text-zinc-400">Current password</label>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="mt-1 w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="mt-1 w-full px-4 py-3 rounded-xl bg-transparent border border-zinc-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-70 transition cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           <div>
@@ -95,7 +112,7 @@ export function DeleteAccountModal({ open, onClose }: Props) {
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleCloseModal}
               className="flex-1 px-4 py-3 rounded-xl border border-zinc-500 hover:bg-white/5 transition cursor-pointer"
             >
               Cancel
