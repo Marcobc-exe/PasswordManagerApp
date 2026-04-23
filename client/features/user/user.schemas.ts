@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const UserProfileSuccessSchema  = z.object({
+export const UserProfileSuccessSchema = z.object({
   email: z.email(),
   username: z.string().nullable(),
   first_name: z.string().nullable(),
@@ -34,9 +34,35 @@ export const ChangePasswordSuccessSchema = z.object({
   message: z.string(),
 });
 
+export const DeleteAccountFormSchema = z.object({
+  current_password: z.string().min(1, "Current password is required"),
+  confirmation_text: z.literal("DELETE", {
+    error: () => ({ message: 'You must type "DELETE"' }),
+  }),
+});
+
+export const DeleteAccountSuccessSchema = z.object({
+  message: z.string(),
+});
+
+export const DeleteAccountFailedSchema = z.object({
+  detail: z.string(),
+});
+
 export type UserProfileSuccessDTO = z.infer<typeof UserProfileSuccessSchema>;
 export type UserProfileFailedDTO = z.infer<typeof UserProfileFailedSchema>;
-export type UpdateUserProfileFormDTO = z.infer<typeof UpdateUserProfileFormSchema>;
-export type UpdateUserProfileSuccessDTO = z.infer<typeof UpdateUserProfileSuccessSchema>;
+export type UpdateUserProfileFormDTO = z.infer<
+  typeof UpdateUserProfileFormSchema
+>;
+export type UpdateUserProfileSuccessDTO = z.infer<
+  typeof UpdateUserProfileSuccessSchema
+>;
 export type ChangePasswordFormDTO = z.infer<typeof ChangePasswordFormSchema>;
-export type ChangePasswordSuccessDTO = z.infer<typeof ChangePasswordSuccessSchema>;
+export type ChangePasswordSuccessDTO = z.infer<
+  typeof ChangePasswordSuccessSchema
+>;
+export type DeleteAccountFormDTO = z.infer<typeof DeleteAccountFormSchema>;
+export type DeleteAccountSuccessDTO = z.infer<
+  typeof DeleteAccountSuccessSchema
+>;
+export type DeleteAccountFailedDTO = z.infer<typeof DeleteAccountFailedSchema>;

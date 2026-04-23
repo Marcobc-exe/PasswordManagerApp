@@ -24,3 +24,9 @@ class ChangePasswordRequest(BaseModel):
   
 class PasswordMessageResponse(BaseModel):
   message: str
+  
+class DeleteUserRequest(BaseModel):
+  current_password: str
+
+class MessageResponse(BaseModel):
+  message: str

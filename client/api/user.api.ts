@@ -1,6 +1,8 @@
 import {
   ChangePasswordFormDTO,
   ChangePasswordSuccessSchema,
+  DeleteAccountFailedSchema,
+  DeleteAccountSuccessSchema,
   UpdateUserProfileFormDTO,
   UpdateUserProfileSuccessSchema,
   UserProfileFailedSchema,
@@ -52,4 +54,19 @@ export async function changeCurrentUserPassword(
   if (failed.success) throw new Error(failed.data.detail);
 
   throw new Error("Invalid change password response");
+}
+
+export async function deleteCurrentUserAccount(current_password: string) {
+  const { data } = await api.delete("/users/me", {
+    data: { current_password },
+    validateStatus: () => true,
+  });
+
+  const success = DeleteAccountSuccessSchema.safeParse(data);
+  if (success.success) return success.data;
+
+  const failed = DeleteAccountFailedSchema.safeParse(data);
+  if (failed.success) throw new Error(failed.data.detail);
+
+  throw new Error("Invalid delete account response");
 }

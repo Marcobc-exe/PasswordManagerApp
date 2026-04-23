@@ -1,5 +1,6 @@
 import {
   changeCurrentUserPassword,
+  deleteCurrentUserAccount,
   getCurrentUserProfile,
   updateCurrentUserProfile,
 } from "@/api/user.api";
@@ -26,5 +27,12 @@ export function useUpdateCurrentUserProfile() {
 export function useChangeCurrentUserPassword() {
   return useMutation({
     mutationFn: changeCurrentUserPassword,
+  });
+}
+
+export function useDeleteCurrentUserAccount() {
+  return useMutation({
+    mutationFn: (current_password: string) =>
+      deleteCurrentUserAccount(current_password),
   });
 }
