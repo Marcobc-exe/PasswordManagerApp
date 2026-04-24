@@ -10,7 +10,7 @@ Password: guest123
 ```
 
 ## 🚀 Live Demo
-- 🌐 Frontend: <a href="https://www.lockerpass.site/login" target="_blank">🔗 Open App</a>
+- 🌐 Frontend: <a href="https://www.lockerpass.site" target="_blank">🔗 Open App</a>
 - 📚 API Docs: <a href="https://passwords-manager-api.onrender.com/docs#/default" target="_blank">📚 Open Swagger Docs</a>
 
 ## 📸 Screenshots
