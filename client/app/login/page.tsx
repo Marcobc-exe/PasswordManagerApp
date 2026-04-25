@@ -6,6 +6,7 @@ import { Spinner } from "@/components/Spinner";
 import { useLogin } from "@/features/login/login.hook";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export default function LoginPage() {
     ? "bg-[#153746] hover:bg-[#15495f]"
     : "bg-[#9c7f53] hover:bg-[#b58b4d]";
   const loginMutation = useLogin();
-  const router = useRouter()
+  const router = useRouter();
 
   const handleLogin = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -79,6 +80,12 @@ export default function LoginPage() {
             {loginMutation.isPending ? <Spinner /> : "Login"}
           </div>
         </button>
+        <Link
+          href="/forgot-password"
+          className="text-sm text-zinc-400 hover:text-white underline flex justify-center mb-3"
+        >
+          Forgot password?
+        </Link>
         <p className="text-center text-sm text-zinc-400">
           Don&apos;t have an account?{" "}
           <a href="/register" className="text-white underline">
