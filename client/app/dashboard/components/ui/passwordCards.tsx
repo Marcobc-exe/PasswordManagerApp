@@ -1,14 +1,14 @@
-import { Eye, EyeOff, Copy, Trash2, Star, StarOff } from "lucide-react";
 import { FC } from "react";
-import { useThemeStore } from "@/app/store/themeStore";
+import { toast } from "sonner";
 import {
   useDeletePassword,
   useToggleFavoritePassword,
 } from "@/features/passwords/passwords.hook";
-import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "sonner";
-import { ActionButton } from "@/components/ActionButton";
 import { PasswordsProps } from "@/src/types/type";
+import { useThemeStore } from "@/app/store/themeStore";
+import { AnimatePresence, motion } from "framer-motion";
+import { ActionButton } from "@/components/ActionButton";
+import { Eye, EyeOff, Copy, Trash2, Star, StarOff } from "lucide-react";
 
 type Props = {
   passwords: PasswordsProps[];
@@ -57,27 +57,31 @@ export const PasswordCards: FC<Props> = ({
   };
 
   return (
-    <AnimatePresence>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-4xl mx-auto place-items-center">
-        {passwords.map((p: PasswordsProps) => {
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-4xl mx-auto place-items-center">
+      <AnimatePresence mode="popLayout">
+        {passwords.map((p: PasswordsProps, index) => {
           const isVisible = visiblePasswords.includes(p.id);
 
           return (
             <motion.div
-              key={p.website}
+              key={p.id}
               layout
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: -8 }}
-              transition={{ duration: 0.4 }}
+              exit={{ opacity: 0, y: -16, scale: 0.96 }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.08,
+                ease: "easeOut",
+              }}
               className={`
-                  w-full max-w-md  p-5 rounded-2xl flex justify-between items-center transition
-                  ${
-                    darkMode
-                      ? "bg-[#0f2027] hover:bg-[#0d1b21] text-white"
-                      : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
-                  }
-                `}
+                w-full max-w-md p-5 rounded-2xl flex justify-between items-center gap-4
+                ${
+                  darkMode
+                    ? "bg-[#0f2027] hover:bg-[#0d1b21] text-white"
+                    : "bg-[#dbb985] hover:bg-[#d7ae71] text-black"
+                }
+              `}
             >
               <div className="flex flex-col gap-1 flex-1 min-w-0">
                 <p className="text-lg font-semibold truncate">{p.website}</p>
@@ -148,7 +152,7 @@ export const PasswordCards: FC<Props> = ({
             </motion.div>
           );
         })}
-      </div>
-    </AnimatePresence>
+      </AnimatePresence>
+    </div>
   );
 };
