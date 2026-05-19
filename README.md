@@ -5,7 +5,7 @@ Users can securely store, view, and manage their credentials through an intuitiv
 ## 🔑 Demo Account
 You can explore the app using this test account:
 ```bash
-Email: guest@gmail.com
+Email: guest1@gmail.com
 Password: guest123
 ```
 
