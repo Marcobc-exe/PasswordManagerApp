@@ -1,11 +1,22 @@
+import os
 import bcrypt
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, MultiFernet
+from dotenv import load_dotenv
 
-# Generate encryption key
-key = Fernet.generate_key()
-cipher = Fernet(key)
-SECRET_KEY = "REMOVED_ENCRYPTION_KEY"
-cipher = Fernet(SECRET_KEY.encode())
+load_dotenv()
+
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+# Only set during a key rotation, so data encrypted with the old key can still be read
+OLD_ENCRYPTION_KEY = os.getenv("OLD_ENCRYPTION_KEY")
+
+if not ENCRYPTION_KEY:
+  raise ValueError("ENCRYPTION_KEY is not set")
+
+# The first key encrypts; every key in the list can decrypt
+keys = [Fernet(ENCRYPTION_KEY.encode())]
+if OLD_ENCRYPTION_KEY:
+  keys.append(Fernet(OLD_ENCRYPTION_KEY.encode()))
+cipher = MultiFernet(keys)
 
 # Hash password
 def hash_password(password: str):
@@ -24,3 +35,7 @@ def encrypt_website_password(password: str):
 
 def decrypt_website_password(encrypted_password: str):
   return cipher.decrypt(encrypted_password.encode()).decode()
+
+# Re-encrypt a value with the current key (used once when rotating keys)
+def rotate_website_password(encrypted_password: str):
+  return cipher.rotate(encrypted_password.encode()).decode()

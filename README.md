@@ -67,8 +67,11 @@ cd api
 python -m venv venv
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
+cp .env.example .env  # then fill in your own values
 uvicorn app.main:app --reload
 ```
+
+`.env.example` lists every required variable and the commands to generate `SECRET_KEY` and `ENCRYPTION_KEY`. Never commit `.env`.
 
 ## Frontend
 
